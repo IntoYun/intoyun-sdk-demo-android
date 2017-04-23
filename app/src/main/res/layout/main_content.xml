@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.activity.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/lay_action_bar"
+            layout="@layout/lay_actionbar" />
+
+        <FrameLayout
+            android:id="@+id/frameContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/layDivider"
+            android:layout_below="@+id/lay_action_bar" />
+
+        <View
+            android:id="@+id/layDivider"
+            android:layout_above="@+id/nav_tab"
+            android:background="@color/divide_line_color"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+
+        <com.ashokvarma.bottomnavigation.BottomNavigationBar
+            android:layout_gravity="bottom"
+            android:id="@+id/nav_tab"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/tab_background"
+            android:elevation="8dp"
+            android:layout_height="56dp"/>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

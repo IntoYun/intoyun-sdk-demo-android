@@ -1,0 +1,4 @@
+1、编译
+gradlew install
+2.上传
+gradlew bintrayUpload

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_data_point_background"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:padding="@dimen/item_padding">
+
+    <RelativeLayout
+        android:id="@+id/layTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/txtTitle"
+            style="@style/body_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="title" />
+
+
+        <TextView
+            android:id="@+id/btnSend"
+            style="@style/body_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:text="@string/send" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layTitle"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/txtValue"
+            android:text="hello intoyun!"
+            style="@style/body_text"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/etContent"
+            style="@style/input_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/input_round_background"
+            android:hint="@string/input_hint"
+            android:padding="10dp"
+            android:scrollHorizontally="false" />
+    </RelativeLayout>
+</RelativeLayout>

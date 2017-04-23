@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<solid android:color="#dedacf"/>
+	<corners android:radius="4.0dip"/>
+	<!-- 渐变 -->
+	<gradient
+		android:startColor="#f5f4f0"
+		android:endColor="#dedacf"
+		android:useLevel="true"
+		android:angle="45"
+		android:type="radial"
+		android:centerX="0"
+		android:centerY="0"
+		android:gradientRadius="90"/>
+</selector>

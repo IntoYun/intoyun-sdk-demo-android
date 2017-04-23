@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<color name="common_white">#FFFFFF</color>
+	<color name="common_black">#000000</color>
+
+	<color name="colorPrimary">#00c6ff</color>
+	<color name="colorPrimaryDark">#00c6ff</color>
+	<color name="colorAccent">@color/color_blue</color>
+	<color name="colorAccentPressed">#af03A9F4</color>
+
+	<color name="body_text_color">#0e0d0d</color>
+	<color name="text_hint_color">#686868</color>
+	<color name="list_item_pressed">#7f303F9F</color>
+
+
+	<color name="green">#18ca18</color>
+
+	<!--内容条目分割线颜色-->
+	<color name="item_white">#e2dbdb</color>
+	<color name="divide_line_color">#e1e1e1</color>
+
+	<!--表盘颜色变化-->
+	<color name="start_color">#873F92</color>
+	<color name="end_color">#d71626</color>
+
+	<!--for ZXing-->
+	<color name="possible_result_points">#c0ffff00</color>
+	<color name="viewfinder_mask">#60000000</color>
+	<color name="result_view">#b0000000</color>
+	<color name="transparent">#00000000</color>
+
+	<color name="point_color">#00BCD4</color>
+	<color name="text_color">#D50000</color>
+	<color name="point_halo_color">#607D8B</color>
+	<color name="wheel_unactive_color">#BDBDBD</color>
+	<color name="wheel_active_color">#4CAF50</color>
+
+	<color name="color_red">#FF6A6E</color>
+	<color name="color_red_light">#FFB4B6</color>
+	<color name="color_blue">#03A9F4</color>
+	<color name="color_gray_light">#F5F5F5</color>
+	<color name="color_gray">#B4B4B4</color>
+
+
+	<color name="color_gray_e4">#e4e5e7</color>
+
+	<color name="color_tab">#00c6ff</color>
+
+	<color name="color_1">#3adfd7</color>
+	<color name="color_2">#35c7ec</color>
+	<color name="color_3">#e9ad4e</color>
+	<color name="color_4">#46a7f1</color>
+	<color name="color_5">#7a91de</color>
+	<color name="color_6">#e57977</color>
+
+</resources>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/data_point_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/shape_data_point_background"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:padding="@dimen/item_padding">
+
+    <TextView
+        android:id="@+id/txtTitle"
+        style="@style/body_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="title" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/txtTitle">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/txtValue"
+            android:max="100"
+            android:progress="30" />
+
+        <com.xw.repo.BubbleSeekBar
+            android:id="@+id/bubbleSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/txtValue"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txtValue"
+            style="@style/body_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="30" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

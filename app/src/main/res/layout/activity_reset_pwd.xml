@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:fitsSystemWindows="true"
+	android:orientation="vertical"
+	tools:context=".ui.activity.ResetPwdActivity">
+
+	<include layout="@layout/lay_actionbar"/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:paddingLeft="@dimen/activity_horizontal_margin"
+		android:paddingRight="@dimen/activity_horizontal_margin"
+		android:paddingTop="@dimen/activity_vertical_margin">
+
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/textinputAccount"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dip">
+
+			<EditText
+				android:id="@+id/editAccount"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/account_hint"
+				android:maxLength="40"
+				style="@style/input_style"/>
+		</android.support.design.widget.TextInputLayout>
+
+		<android.support.design.widget.TextInputLayout
+			android:id="@+id/textinputPassword"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dip">
+
+			<EditText
+				android:id="@+id/editPassword"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/account_pwd_hint"
+				android:maxLength="20"
+				android:inputType="textPassword"
+				style="@style/input_style"/>
+		</android.support.design.widget.TextInputLayout>
+
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dip"
+			android:orientation="horizontal">
+
+			<android.support.design.widget.TextInputLayout
+				android:id="@+id/textinputVerifyCode"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_toLeftOf="@+id/btnVldCode"
+				android:layout_centerInParent="true"
+				android:layout_alignParentLeft="true">
+
+				<EditText
+					android:id="@+id/editVerifyCode"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:hint="@string/account_verify_hint"
+					android:maxLength="10"
+					android:inputType="number"
+					style="@style/input_style"/>
+			</android.support.design.widget.TextInputLayout>
+
+			<Button
+				android:id="@+id/btnVldCode"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="@dimen/body_text"
+				android:layout_centerInParent="true"
+				android:layout_alignParentRight="true"
+				android:textColor="@color/colorPrimary"
+				android:layout_marginLeft="5dp"
+				android:text="@string/get_verify_code"/>
+		</RelativeLayout>
+
+
+
+		<Button
+			android:id="@+id/btnResetPwd"
+			style="@style/btn_commit"
+			android:layout_marginTop="50dip"
+			android:text="@string/reset_password"/>
+	</LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_marginLeft="@dimen/activity_horizontal_margin"
+	android:layout_marginRight="@dimen/activity_horizontal_margin"
+	>
+
+	<android.support.design.widget.TextInputLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20dip">
+		<EditText
+			android:id="@+id/editOldPwd"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/current_pwd"
+			android:inputType="textPassword"
+			style="@style/input_style"/>
+	</android.support.design.widget.TextInputLayout>
+
+	<android.support.design.widget.TextInputLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dip">
+
+		<EditText
+			android:id="@+id/editNewPwd1"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/new_pwd1"
+			android:inputType="textPassword"
+			style="@style/input_style"/>
+	</android.support.design.widget.TextInputLayout>
+
+	<android.support.design.widget.TextInputLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="8dip">
+
+		<EditText
+			android:id="@+id/editNewPwd2"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/new_pwd2"
+			android:inputType="textPassword"
+			style="@style/input_style"/>
+	</android.support.design.widget.TextInputLayout>
+
+	<Button
+		android:id="@+id/btnSend"
+		style="@style/btn_commit"
+		android:layout_marginTop="50dip"
+		android:text="@string/confirm"/>
+</LinearLayout>

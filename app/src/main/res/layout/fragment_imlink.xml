@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/common_white"
+	android:orientation="vertical">
+
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:paddingLeft="12dp"
+		android:paddingRight="12dp">
+
+		<ImageView
+			android:layout_width="70dp"
+			android:layout_height="70dp"
+			android:layout_gravity="center"
+			android:layout_marginTop="30dp"
+			android:src="@drawable/ic_config_wifi"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="20dp"
+			android:gravity="center"
+			android:orientation="horizontal">
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:text="@string/config_current_wifi"
+				android:textColor="@color/body_text_color"
+				android:textSize="14sp"/>
+
+			<TextView
+				android:id="@+id/configWifiName"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:text="gateway_molmc"
+				android:textColor="@color/body_text_color"
+				android:textSize="14sp"/>
+		</LinearLayout>
+
+		<android.support.design.widget.TextInputLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="12dp"
+			android:layout_marginRight="12dp"
+			android:layout_marginTop="10dip">
+
+			<EditText
+				android:id="@+id/configWifiPassword"
+				style="@style/input_style"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:hint="@string/config_wifi_password_hint"
+				android:inputType="textPassword"
+				android:maxLines="1"
+				android:padding="10dp"
+				android:lines="1"
+				android:textColorHint="@color/text_hint_color"
+				android:textSize="@dimen/body_text"/>
+		</android.support.design.widget.TextInputLayout>
+
+
+		<com.skyfishjy.library.RippleBackground
+			android:id="@+id/rippleButton"
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			xmlns:app="http://schemas.android.com/apk/res-auto"
+			android:layout_width="match_parent"
+			android:layout_height="240dp"
+			app:rb_color="#0099CC"
+			app:rb_duration="3000"
+			app:rb_radius="32dp"
+			app:rb_rippleAmount="5"
+			app:rb_scale="3">
+
+			<ImageView
+				android:layout_width="80dp"
+				android:layout_height="80dp"
+				android:layout_centerInParent="true"
+				android:src="@drawable/ic_config_button"/>
+
+			<TextView
+				android:id="@+id/startConfig"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true"
+				android:gravity="center"
+				android:maxEms="2"
+				android:maxLines="2"
+				android:singleLine="false"
+				android:text="@string/config_start"
+				android:textColor="@color/body_text_color"
+				android:textSize="12sp"/>
+		</com.skyfishjy.library.RippleBackground>
+
+	</LinearLayout>
+</RelativeLayout>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.molmc.intoyundemo">
+
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- mqtt -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:name="com.molmc.intoyundemo.base.IntoYunApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/app_icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <activity android:name="com.molmc.intoyundemo.ui.activity.SplashActivity"
+            android:theme="@style/NoTitle_FullScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.molmc.intoyundemo.ui.activity.LoginActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden">
+
+        </activity>
+
+        <activity
+            android:name="com.molmc.intoyundemo.ui.activity.MainActivity"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity android:name="com.molmc.intoyundemo.ui.activity.QRCaptureActivity" />
+
+        <activity android:name="com.molmc.intoyundemo.ui.activity.RegisterActivity" />
+        <activity android:name="com.molmc.intoyundemo.ui.activity.ResetPwdActivity" />
+
+        <activity
+            android:name="com.molmc.intoyundemo.ui.activity.FragmentCommonActivity"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
+
+    </application>
+
+</manifest>

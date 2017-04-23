@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:context=".activity.MainActivity">
+	<item
+		android:id="@+id/menu_device_add"
+		android:orderInCategory="100"
+		android:title="@string/menu_add"
+		app:showAsAction="never"/>
+
+	<item
+		android:id="@+id/menu_qr_scan"
+		android:orderInCategory="100"
+		android:title="@string/menu_qr_scan"
+		app:showAsAction="never"/>
+</menu>
