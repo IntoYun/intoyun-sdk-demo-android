@@ -14,7 +14,6 @@ public class IntoYunApplication extends Application {
 	//intoyun
 	private String appId = "36c125683434195b8c1ce306887daf3c";
 	private String appSecret = "e3b0b621301b4e0d2e60f5f1bba2b410";
-
 	private static IntoYunApplication instance;
 
 	@Override
