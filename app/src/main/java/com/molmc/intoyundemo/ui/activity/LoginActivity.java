@@ -3,7 +3,6 @@ package com.molmc.intoyundemo.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -11,14 +10,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.molmc.intoyundemo.R;
+import com.molmc.intoyundemo.utils.AppSharedPref;
+import com.molmc.intoyundemo.utils.DialogUtil;
 import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
 import com.molmc.intoyunsdk.network.model.response.AppTokenResult;
 import com.molmc.intoyunsdk.network.model.response.UserResult;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
-import com.molmc.intoyundemo.R;
-import com.molmc.intoyundemo.utils.AppSharedPref;
-import com.molmc.intoyundemo.utils.DialogUtil;
 import com.orhanobut.logger.Logger;
 
 import butterknife.Bind;
@@ -44,8 +43,6 @@ public class LoginActivity extends BaseActivity {
 	EditText editPassword;
 	@Bind(R.id.btnRegister)
 	Button btnLogin;
-	@Bind(R.id.toolbar)
-	Toolbar toolbar;
 	@Bind(R.id.btnToRegister)
 	TextView btnToRegister;
 	@Bind(R.id.btnToForgetPwd)
@@ -60,8 +57,6 @@ public class LoginActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		ButterKnife.bind(this);
-		setSupportActionBar(toolbar);
-		getSupportActionBar().setTitle(R.string.login);
 		account = AppSharedPref.getInstance(this).getUserAccount();
 		password = AppSharedPref.getInstance(this).getUserPassword();
 		if (!TextUtils.isEmpty(account)) {

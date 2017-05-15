@@ -6,7 +6,7 @@
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
 		<item name="colorAccent">@color/colorAccent</item>
-		<item name="android:windowBackground">@color/common_white</item>
+		<item name="android:windowBackground">@color/backgroundColor</item>
 		<item name="android:windowAnimationStyle">@style/AnimationActivity</item>
 	</style>
 
@@ -16,9 +16,16 @@
 	<style name="NoTitle_FullScreen" parent="Theme.AppCompat.Light.NoActionBar">
 		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowFullscreen">true</item>
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+		<item name="android:windowBackground">@drawable/splash</item>
 	</style>
 
 	<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+	<style name="AppTheme.AppBarOverlay.No" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+		<item name="elevation">0dp</item>
+	</style>
 
 	<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
 		<!--把该属性改为false即可使menu位置位于toolbar之下-->
@@ -38,6 +45,12 @@
 		<item name="android:textColor">@color/body_text_color</item>
 	</style>
 
+	<style name="body_text_white">
+		<item name="android:textSize">@dimen/body_text</item>
+		<item name="android:textColor">@color/common_white</item>
+	</style>
+
+
 	<style name="sub_body_text">
 		<item name="android:textSize">@dimen/sub_body_text</item>
 		<item name="android:textColor">@color/text_hint_color</item>
@@ -52,10 +65,25 @@
 		<item name="android:background">@drawable/selector_corners_button</item>
 	</style>
 
+	<style name="btn_transparent_commit">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:textSize">@dimen/title_text</item>
+		<item name="android:textColor">@color/common_white</item>
+		<item name="android:gravity">center</item>
+		<item name="android:background">@drawable/selector_corners_transparent_button</item>
+	</style>
 	<style name="input_style">
 		<item name="android:textSize">@dimen/body_text</item>
 		<item name="android:textColor">?android:attr/textColorPrimary</item>
 		<item name="android:textColorHint">@color/text_hint_color</item>
+	</style>
+
+	<style name="input_white_style">
+		<item name="android:textSize">@dimen/body_text</item>
+		<item name="android:textColor">@color/common_white</item>
+		<item name="android:background">@null</item>
+		<item name="android:textColorHint">@color/text_hint_white_color</item>
 	</style>
 
 	<!--跳转动画-->

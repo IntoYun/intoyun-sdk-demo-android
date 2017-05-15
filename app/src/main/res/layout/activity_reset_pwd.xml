@@ -5,9 +5,17 @@
 	android:layout_height="match_parent"
 	android:fitsSystemWindows="true"
 	android:orientation="vertical"
+	android:background="@drawable/shape_background"
 	tools:context=".ui.activity.ResetPwdActivity">
 
-	<include layout="@layout/lay_actionbar"/>
+	<include layout="@layout/lay_actionbar_white"/>
+
+	<ImageView
+		android:layout_gravity="center_horizontal"
+		android:layout_width="200dp"
+		android:layout_height="70dp"
+		android:layout_marginTop="20dp"
+		android:src="@drawable/ic_logo_white"/>
 
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -17,11 +25,16 @@
 		android:paddingRight="@dimen/activity_horizontal_margin"
 		android:paddingTop="@dimen/activity_vertical_margin">
 
-		<android.support.design.widget.TextInputLayout
+		<LinearLayout
 			android:id="@+id/textinputAccount"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="8dip">
+			android:gravity="center_vertical"
+			android:layout_marginTop="20dp">
+
+			<ImageView android:layout_height="30dp"
+				android:layout_width="30dp"
+				android:src="@drawable/ic_input_phone"/>
 
 			<EditText
 				android:id="@+id/editAccount"
@@ -29,15 +42,20 @@
 				android:layout_height="wrap_content"
 				android:hint="@string/account_hint"
 				android:maxLength="40"
-				style="@style/input_style"/>
-		</android.support.design.widget.TextInputLayout>
+				style="@style/input_white_style"
+				android:padding="10dp"/>
+		</LinearLayout>
 
-		<android.support.design.widget.TextInputLayout
+		<LinearLayout
 			android:id="@+id/textinputPassword"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="8dip">
+			android:gravity="center_vertical"
+			android:layout_marginTop="20dp">
 
+			<ImageView android:layout_height="30dp"
+				android:layout_width="30dp"
+				android:src="@drawable/ic_input_pwd"/>
 			<EditText
 				android:id="@+id/editPassword"
 				android:layout_width="match_parent"
@@ -45,23 +63,28 @@
 				android:hint="@string/account_pwd_hint"
 				android:maxLength="20"
 				android:inputType="textPassword"
-				style="@style/input_style"/>
-		</android.support.design.widget.TextInputLayout>
+				style="@style/input_white_style"
+				android:padding="10dp"/>
+		</LinearLayout>
 
 		<RelativeLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="8dip"
+			android:layout_marginTop="20dip"
 			android:orientation="horizontal">
 
-			<android.support.design.widget.TextInputLayout
+			<LinearLayout
 				android:id="@+id/textinputVerifyCode"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_toLeftOf="@+id/btnVldCode"
 				android:layout_centerInParent="true"
-				android:layout_alignParentLeft="true">
+				android:layout_alignParentLeft="true"
+				android:gravity="center_vertical">
 
+				<ImageView android:layout_height="30dp"
+					android:layout_width="30dp"
+					android:src="@drawable/ic_input_vld"/>
 				<EditText
 					android:id="@+id/editVerifyCode"
 					android:layout_width="match_parent"
@@ -69,8 +92,9 @@
 					android:hint="@string/account_verify_hint"
 					android:maxLength="10"
 					android:inputType="number"
-					style="@style/input_style"/>
-			</android.support.design.widget.TextInputLayout>
+					style="@style/input_white_style"
+					android:padding="10dp"/>
+			</LinearLayout>
 
 			<Button
 				android:id="@+id/btnVldCode"
@@ -79,7 +103,8 @@
 				android:textSize="@dimen/body_text"
 				android:layout_centerInParent="true"
 				android:layout_alignParentRight="true"
-				android:textColor="@color/colorPrimary"
+				android:textColor="@color/common_white"
+				android:background="@drawable/selector_corners_vld_transparent_button"
 				android:layout_marginLeft="5dp"
 				android:text="@string/get_verify_code"/>
 		</RelativeLayout>
@@ -88,8 +113,8 @@
 
 		<Button
 			android:id="@+id/btnResetPwd"
-			style="@style/btn_commit"
-			android:layout_marginTop="50dip"
+			style="@style/btn_transparent_commit"
+			android:layout_marginTop="40dip"
 			android:text="@string/reset_password"/>
 	</LinearLayout>
 

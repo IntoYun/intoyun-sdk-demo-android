@@ -11,12 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.molmc.intoyundemo.R;
+import com.molmc.intoyundemo.ui.activity.BaseActivity;
+import com.molmc.intoyundemo.ui.activity.FragmentCommonActivity;
+import com.molmc.intoyundemo.ui.activity.LoginActivity;
 import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
-import com.molmc.intoyundemo.R;
-import com.molmc.intoyundemo.ui.activity.FragmentCommonActivity;
-import com.molmc.intoyundemo.ui.activity.LoginActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,9 +49,14 @@ public class ChangePwdFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_change_pwd, container, false);
         ButterKnife.bind(this, view);
+        initView();
         return view;
     }
-
+    private void initView() {
+        BaseActivity baseActivity = (BaseActivity) getActivity();
+        baseActivity.getSupportActionBar().setTitle(R.string.change_password);
+        setHasOptionsMenu(true);
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();

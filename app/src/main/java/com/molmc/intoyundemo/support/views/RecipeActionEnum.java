@@ -76,7 +76,7 @@ public class RecipeActionEnum extends LinearLayout {
         tvLogic.setVisibility(GONE);
 
         if (!IntoUtil.Empty.check(dataPoint.get_enum()) && !IntoUtil.Empty.check(actionVal.getValue())) {
-            int value = (int) Float.parseFloat(String.valueOf(actionVal.getValue()));
+            int value = Integer.parseInt(String.valueOf(actionVal.getValue()));
             tvEnum.setText((String) dataPoint.get_enum().get(value));
         } else {
             tvEnum.setText((String) dataPoint.get_enum().get(0));

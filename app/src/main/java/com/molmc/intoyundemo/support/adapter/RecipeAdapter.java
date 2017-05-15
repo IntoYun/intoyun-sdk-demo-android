@@ -41,6 +41,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 public class RecipeAdapter extends easyRegularAdapter<RecipeBean, RecipeAdapter.RecipeNode> {
 
     private Context mContext;
+    private boolean isClick = false;
     private int[] colors = {R.color.color_1, R.color.color_2, R.color.color_3, R.color.color_4, R.color.color_5, R.color.color_6};
     private static final int[] defaultDrawables = {R.mipmap.ic_default_1, R.mipmap.ic_default_2, R.mipmap.ic_default_3, R.mipmap.ic_default_4, R.mipmap.ic_default_5, R.mipmap.ic_default_6};
 
@@ -79,6 +80,7 @@ public class RecipeAdapter extends easyRegularAdapter<RecipeBean, RecipeAdapter.
         } else {
             holder.txtCategory.setText(R.string.recipe_period);
         }
+
         holder.swEnable.setOnCheckedChangeListener(onCheckedChangeListener(recipe));
         holder.runTest.setOnClickListener(onClickListener(recipe, holder));
         holder.itemView.setOnLongClickListener(onLongClickListener(recipe, position));
@@ -95,22 +97,23 @@ public class RecipeAdapter extends easyRegularAdapter<RecipeBean, RecipeAdapter.
                     .bitmapTransform(new RoundedCornersTransformation(mContext, Utils.dip2px(20), 0)).into(holder.imgActionPhoto);
     }
 
+
     private SwitchButton.OnCheckedChangeListener onCheckedChangeListener(final RecipeBean recipe) {
         return new SwitchButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SwitchButton buttonView, boolean isChecked) {
-                recipe.setEnabled(isChecked);
-                IntoYunSdk.updateRecipe(recipe.get_id(), recipe.getType(), recipe, new IntoYunListener() {
-                    @Override
-                    public void onSuccess(Object result) {
-                        DialogUtil.showToast(R.string.suc_change);
-                    }
-
-                    @Override
-                    public void onFail(NetError error) {
-                        DialogUtil.showToast(error.getMessage());
-                    }
-                });
+//                recipe.setEnabled(isChecked);
+//                IntoYunSdk.updateRecipe(recipe.get_id(), recipe.getType(), recipe, new IntoYunListener() {
+//                    @Override
+//                    public void onSuccess(Object result) {
+//                        DialogUtil.showToast(R.string.suc_change);
+//                    }
+//
+//                    @Override
+//                    public void onFail(NetError error) {
+//                        DialogUtil.showToast(error.getMessage());
+//                    }
+//                });
             }
         };
     }

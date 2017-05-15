@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.marshalchen.ultimaterecyclerview.layoutmanagers.ScrollSmoothLineaerLayoutManager;
+import com.molmc.intoyundemo.utils.AppSharedPref;
+import com.molmc.intoyunsdk.bean.BoardInfoBean;
 import com.molmc.intoyunsdk.bean.DataPointBean;
 import com.molmc.intoyunsdk.bean.DeviceBean;
 import com.molmc.intoyunsdk.bean.RecipeBean;
@@ -35,6 +37,7 @@ import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -71,6 +74,7 @@ public class SelectActionFragment extends BaseFragment implements ClickGridItemL
     private List<DataPointBean> dataPoints = new ArrayList<>();
     private RecipeBean createRecipe;
     private DeviceBean selectDevice;
+    private Map<String, BoardInfoBean> boardInfoBeanMap;
 
     @Nullable
     @Override
@@ -88,13 +92,12 @@ public class SelectActionFragment extends BaseFragment implements ClickGridItemL
     }
 
     private void initView() {
+        boardInfoBeanMap = AppSharedPref.getInstance(this.getActivity()).getBoarInfo();
         tvDataPointTitle.setText(R.string.recipe_action_data_point);
         deviceList = filterDevice();
         deviceList.add(0, Utils.SYSTEM_DEVICE(getActivity()));
         Logger.i(new Gson().toJson(deviceList));
         if (!IntoUtil.Empty.check(deviceList)) {
-            Logger.i("length: " + Math.ceil(deviceList.size() / 6.0f));
-            Logger.i("length: " + Math.floor(deviceList.size() / 6.0f));
             for (int i = 0; i < Math.ceil(deviceList.size() / 6.0f); i++) {
                 int index = i * 6;
                 int end = deviceList.size();
@@ -139,6 +142,7 @@ public class SelectActionFragment extends BaseFragment implements ClickGridItemL
 
         RecipeBean.ActionValBean actionVal = new RecipeBean.ActionValBean();
         actionVal.setDpId(selectDataPoint.getDpId());
+        actionVal.setDpType(Utils.parseDataPointType(selectDataPoint));
         if (Constant.RECIPE_ACTION_EMAIL.equals(selectDataPoint.getType())) {
             actionVal.setType(Constant.RECIPE_ACTION_EMAIL);
             actionVal.setTo(IntoYunSharedPrefs.getUserInfo(getActivity()).getEmail());
@@ -177,7 +181,7 @@ public class SelectActionFragment extends BaseFragment implements ClickGridItemL
         List<DeviceBean> devices = DeviceDataBase.getInstance(getActivity()).getDevices();
         List<DeviceBean> deviceFilters = new ArrayList<>();
         for (DeviceBean device : devices) {
-            if (filterDataPoint(device.getPidImp()).size() > 0) {
+            if (!"LoRa".equals(boardInfoBeanMap.get(device.getBoard()).getAccessMode()) && filterDataPoint(device.getPidImp()).size() > 0) {
                 deviceFilters.add(device);
             }
         }

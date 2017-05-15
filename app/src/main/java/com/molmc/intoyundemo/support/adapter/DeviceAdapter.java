@@ -11,20 +11,23 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
 import com.marshalchen.ultimaterecyclerview.quickAdapter.easyRegularAdapter;
+import com.molmc.intoyundemo.R;
+import com.molmc.intoyundemo.support.db.DataPointDataBase;
+import com.molmc.intoyundemo.ui.fragment.DeviceFragment;
+import com.molmc.intoyundemo.ui.fragment.DeviceInfoFragment;
+import com.molmc.intoyundemo.utils.AppSharedPref;
+import com.molmc.intoyundemo.utils.DialogUtil;
+import com.molmc.intoyundemo.utils.Utils;
+import com.molmc.intoyunsdk.bean.BoardInfoBean;
 import com.molmc.intoyunsdk.bean.DataPointBean;
 import com.molmc.intoyunsdk.bean.DeviceBean;
 import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyunsdk.utils.IntoUtil;
-import com.molmc.intoyundemo.R;
-import com.molmc.intoyundemo.support.db.DataPointDataBase;
-import com.molmc.intoyundemo.ui.fragment.DeviceFragment;
-import com.molmc.intoyundemo.ui.fragment.DeviceInfoFragment;
-import com.molmc.intoyundemo.utils.DialogUtil;
-import com.molmc.intoyundemo.utils.Utils;
 
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,6 +41,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.DeviceNode> {
 
     private Context mContext;
+    private Map<String, BoardInfoBean> boardInfoBeanMap;
 
     private static final int[] colors = {R.color.color_1, R.color.color_2, R.color.color_3, R.color.color_4, R.color.color_5, R.color.color_6};
     private static final int[] defaultDrawables = {R.mipmap.ic_default_1, R.mipmap.ic_default_2, R.mipmap.ic_default_3, R.mipmap.ic_default_4, R.mipmap.ic_default_5, R.mipmap.ic_default_6};
@@ -59,6 +63,9 @@ public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.
      * @param deviceList the device list
      */
     public void changeData(List<DeviceBean> deviceList) {
+        if (boardInfoBeanMap==null){
+            boardInfoBeanMap = AppSharedPref.getInstance(this.mContext).getBoarInfo();
+        }
         source = deviceList;
         notifyDataSetChanged();
     }
@@ -97,7 +104,7 @@ public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.
 
     private void initView(DeviceBean dev, DeviceNode holder, int position) {
         holder.txtName.setText(dev.getName());
-        holder.txtAccessMode.setText(dev.getAccessMode());
+        holder.txtAccessMode.setText(boardInfoBeanMap.get(dev.getBoard()).getAccessMode());
         Glide.with(mContext).load(com.molmc.intoyunsdk.openapi.Constant.INTOYUN_HTTP_HOST + dev.getImgSrc()).placeholder(defaultDrawables[position % defaultDrawables.length])
                 .bitmapTransform(new RoundedCornersTransformation(mContext, Utils.dip2px(40), 0)).into(holder.imgPhoto);
         holder.itemDevice.setOnClickListener(onClickListener(holder, dev));

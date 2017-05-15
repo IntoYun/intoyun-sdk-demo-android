@@ -22,6 +22,7 @@ import com.molmc.intoyundemo.ui.fragment.MessageFragment;
 import com.molmc.intoyundemo.ui.fragment.MineFragment;
 import com.molmc.intoyundemo.ui.fragment.RecipeFragment;
 import com.molmc.intoyundemo.utils.AppSharedPref;
+import com.molmc.intoyunsdk.bean.BoardInfoBean;
 import com.molmc.intoyunsdk.bean.DataPointBean;
 import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
@@ -66,6 +67,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     private FragmentManager fragmentManager;
     private int messageBadge = 0;
 
+    private Map<String, BoardInfoBean> boardInfoMap;
     private BadgeItem numberBadgeItem;
     private UserResult userInfo;
 
@@ -89,7 +91,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.frameContent, fragments[0], fragmentTags[0]).commit();
-        getProducts();
+        getBoardInfo();
         registerReceiveMessage();
     }
 
@@ -122,6 +124,25 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
             @Override
             public void onSuccess(Map<String, List<DataPointBean>> result) {
                 DataPointDataBase.getInstance(MainActivity.this).saveDataPoints(result);
+            }
+
+            @Override
+            public void onFail(NetError error) {
+                Logger.e(error.getMessage());
+                showToast(error.getMessage());
+            }
+        });
+    }
+
+
+    private void getBoardInfo(){
+        IntoYunSdk.getBoardInfo(new IntoYunListener<Map<String, BoardInfoBean>>() {
+            @Override
+            public void onSuccess(Map<String, BoardInfoBean> result) {
+                Logger.i("getBoardInfo");
+                boardInfoMap = result;
+                AppSharedPref.getInstance(MainActivity.this).saveBoardInfo(result);
+                getProducts();
             }
 
             @Override

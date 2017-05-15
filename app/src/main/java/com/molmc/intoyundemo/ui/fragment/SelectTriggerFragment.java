@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import com.google.gson.Gson;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.marshalchen.ultimaterecyclerview.layoutmanagers.ScrollSmoothLineaerLayoutManager;
+import com.molmc.intoyundemo.utils.AppSharedPref;
+import com.molmc.intoyunsdk.bean.BoardInfoBean;
 import com.molmc.intoyunsdk.bean.DataPointBean;
 import com.molmc.intoyunsdk.bean.DeviceBean;
 import com.molmc.intoyunsdk.bean.RecipeBean;
@@ -33,6 +35,7 @@ import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -66,6 +69,7 @@ public class SelectTriggerFragment extends BaseFragment implements ClickGridItem
     private List<DataPointBean> dataPoints = new ArrayList<>();
     private RecipeBean createRecipe;
     private DeviceBean selectedDevice;
+    private Map<String, BoardInfoBean> boardInfoBeanMap;
 
     @Nullable
     @Override
@@ -80,6 +84,7 @@ public class SelectTriggerFragment extends BaseFragment implements ClickGridItem
     }
 
     private void initView() {
+        boardInfoBeanMap = AppSharedPref.getInstance(this.getActivity()).getBoarInfo();
         deviceList = filterDevice();
         deviceList.add(0, Utils.SYSTEM_DEVICE(getActivity()));
         Logger.i(new Gson().toJson(deviceList));
@@ -143,6 +148,7 @@ public class SelectTriggerFragment extends BaseFragment implements ClickGridItem
             RecipeBean.TriggerValBean triggerVal = new RecipeBean.TriggerValBean();
             triggerVal.setFrom(deviceId);
             triggerVal.setDpId(selectDataPoint.getDpId());
+            triggerVal.setDpType(Utils.parseDataPointType(selectDataPoint));
             triggerVal.setOp("eq");
             triggerVal.setValue(0);
             createRecipe.setTriggerVal(triggerVal);
@@ -173,7 +179,7 @@ public class SelectTriggerFragment extends BaseFragment implements ClickGridItem
         List<DeviceBean> devices = DeviceDataBase.getInstance(getActivity()).getDevices();
         List<DeviceBean> deviceFilters = new ArrayList<>();
         for (DeviceBean device : devices) {
-            if (filterDataPoint(device.getPidImp()).size() > 0) {
+            if (!"LoRa".equals(boardInfoBeanMap.get(device.getBoard()).getAccessMode()) && filterDataPoint(device.getPidImp()).size() > 0) {
                 deviceFilters.add(device);
             }
         }

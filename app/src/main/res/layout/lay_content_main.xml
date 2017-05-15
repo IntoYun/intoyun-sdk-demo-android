@@ -13,39 +13,55 @@
     tools:context=".ui.activity.LoginActivity"
     tools:showIn="@layout/activity_login">
 
-    <android.support.design.widget.TextInputLayout
+    <ImageView
+        android:layout_gravity="center_horizontal"
+        android:layout_width="200dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/ic_logo_white"/>
+
+    <LinearLayout
         android:id="@+id/textinputAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dip">
+        android:gravity="center_vertical"
+        android:layout_marginTop="50dp">
 
+        <ImageView android:layout_height="30dp"
+            android:layout_width="30dp"
+            android:src="@drawable/ic_input_phone"/>
         <EditText
             android:id="@+id/editAccount"
-            style="@style/input_style"
+            style="@style/input_white_style"
+            android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/account_hint" />
-    </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <LinearLayout
         android:id="@+id/textinputPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dip">
-
+        android:gravity="center_vertical"
+        android:layout_marginTop="20dp">
+        <ImageView android:layout_height="30dp"
+            android:layout_width="30dp"
+            android:src="@drawable/ic_input_pwd"/>
         <EditText
             android:id="@+id/editPassword"
-            style="@style/input_style"
+            style="@style/input_white_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="10dp"
             android:hint="@string/account_pwd_hint"
             android:inputType="textPassword" />
-    </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnRegister"
-        style="@style/btn_commit"
-        android:layout_marginTop="50dip"
+        style="@style/btn_transparent_commit"
+        android:layout_marginTop="40dp"
         android:text="@string/login" />
 
     <RelativeLayout
@@ -60,7 +76,7 @@
             android:layout_alignParentLeft="true"
             android:padding="12dp"
             android:text="@string/register"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/common_white"
             android:textSize="@dimen/body_text" />
 
         <TextView
@@ -70,7 +86,7 @@
             android:layout_alignParentRight="true"
             android:padding="12dp"
             android:text="@string/forget_password"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/common_white"
             android:textSize="@dimen/body_text" />
     </RelativeLayout>
 

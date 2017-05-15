@@ -71,8 +71,13 @@ public class RecipeActionBool extends LinearLayout implements CompoundButton.OnC
         if (swSwitch != null) {
             swSwitch.setOnCheckedChangeListener(this);
             if (!IntoUtil.Empty.check(actionVal)){
-                boolean status = (String.valueOf(actionVal.getValue())).equals("true");
-                swSwitch.setChecked(status);
+                try {
+                    boolean status = ((int)Float.parseFloat(String.valueOf(actionVal.getValue()))) == 1;
+                    swSwitch.setChecked(status);
+                } catch (Exception e){
+                    boolean status = false;
+                    swSwitch.setChecked(status);
+                }
             } else {
                 swSwitch.setChecked(true);
             }
@@ -81,7 +86,7 @@ public class RecipeActionBool extends LinearLayout implements CompoundButton.OnC
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        actionVal.setValue(isChecked);
+        actionVal.setValue(isChecked ? 1: 0);
         this.listener.onActionChange(actionVal);
     }
 

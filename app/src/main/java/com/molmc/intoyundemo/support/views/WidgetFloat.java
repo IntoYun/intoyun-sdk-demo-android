@@ -73,7 +73,6 @@ public class WidgetFloat extends LinearLayout implements BubbleSeekBar.OnProgres
             progressBar.setProgress(dataPoint.getMin());
         } else {
             bubbleSeekBar.setVisibility(VISIBLE);
-//            tvValue.setVisibility(GONE);
             progressBar.setVisibility(GONE);
             bubbleSeekBar.getConfigBuilder()
                     .min(dataPoint.getMin())
@@ -101,7 +100,7 @@ public class WidgetFloat extends LinearLayout implements BubbleSeekBar.OnProgres
     public void receiveData(Map<Integer, Object> data) {
         if (data.containsKey(dataPoint.getDpId())) {
             float value = Float.parseFloat(String.valueOf(data.get(dataPoint.getDpId())));
-            String valueStr = toDecimal(value);
+            String valueStr = Utils.toDecimal(value, dataPoint);
 
             if (dataPoint.getDirection() == Constant.TRANSFROM_DATA) {
                 progressBar.setProgress((int) value);
@@ -115,15 +114,21 @@ public class WidgetFloat extends LinearLayout implements BubbleSeekBar.OnProgres
 
     @Override
     public void onProgressChanged(int progress, float progressFloat) {
-        String sendData = toDecimal(progressFloat);
+//        String sendData = Utils.toDecimal(progressFloat, dataPoint);
+//        tvValue.setText(sendData + unit);
+//        if (dataPoint.getDirection() != Constant.TRANSFROM_DATA) {
+//            this.mListener.onChanged(Float.valueOf(sendData), dataPoint);
+//        }
+    }
+
+
+    @Override
+    public void getProgressOnActionUp(int progress, float progressFloat) {
+        String sendData = Utils.toDecimal(progressFloat, dataPoint);
         tvValue.setText(sendData + unit);
         if (dataPoint.getDirection() != Constant.TRANSFROM_DATA) {
             this.mListener.onChanged(Float.valueOf(sendData), dataPoint);
         }
-    }
-
-    @Override
-    public void getProgressOnActionUp(int progress, float progressFloat) {
     }
 
     @Override
@@ -136,26 +141,6 @@ public class WidgetFloat extends LinearLayout implements BubbleSeekBar.OnProgres
         EventBus.getDefault().unregister(this);
     }
 
-    private String toDecimal(float value){
-        String valueStr = String.valueOf(value);
 
-        int indexDot = valueStr.indexOf(".");
 
-        if (indexDot < 0){
-            if (dataPoint.getResolution()>0){
-                valueStr = valueStr + ".";
-            } else {
-                return valueStr;
-            }
-        } else {
-            if (dataPoint.getResolution()<=0){
-                valueStr = valueStr.split("\\.")[0];
-                return valueStr;
-            }
-        }
-        while (valueStr.length() <= indexDot + dataPoint.getResolution()){
-            valueStr = valueStr + "0";
-        }
-        return valueStr;
-    }
 }

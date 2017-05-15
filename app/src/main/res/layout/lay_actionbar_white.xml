@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.AppBarLayout
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:theme="@style/AppTheme.AppBarOverlay.No"
+	android:background="@android:color/transparent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize"
+		android:background="@android:color/transparent"
+		app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+</android.support.design.widget.AppBarLayout>

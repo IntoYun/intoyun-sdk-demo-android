@@ -52,7 +52,6 @@
             android:layout_height="wrap_content"
             android:background="@drawable/input_round_background"
             android:hint="@string/input_hint"
-            android:padding="10dp"
-            android:scrollHorizontally="false" />
+            android:padding="10dp"/>
     </RelativeLayout>
 </RelativeLayout>

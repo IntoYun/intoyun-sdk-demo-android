@@ -71,8 +71,12 @@ public class RecipeTriggerBool extends LinearLayout implements CompoundButton.On
         if (swSwitch != null) {
             swSwitch.setOnCheckedChangeListener(this);
             if (!IntoUtil.Empty.check(triggerVal)){
-                boolean status = (String.valueOf(triggerVal.getValue())).equals("true");
-                swSwitch.setChecked(status);
+                try {
+                    boolean status = ((int)Float.parseFloat(String.valueOf(triggerVal.getValue()))) == 1;
+                    swSwitch.setChecked(status);
+                } catch (Exception e){
+                    swSwitch.setChecked(true);
+                }
             } else {
                 swSwitch.setChecked(true);
             }
@@ -84,8 +88,9 @@ public class RecipeTriggerBool extends LinearLayout implements CompoundButton.On
         RecipeBean.TriggerValBean mTrigger = new RecipeBean.TriggerValBean();
         mTrigger.setDpId(triggerVal.getDpId());
         mTrigger.setFrom(triggerVal.getFrom());
+        mTrigger.setDpType(Utils.parseDataPointType(dataPoint));
         mTrigger.setOp("eq");
-        mTrigger.setValue(isChecked);
+        mTrigger.setValue(isChecked ? 1 : 0);
         this.listener.onTriggerChange(mTrigger);
     }
 

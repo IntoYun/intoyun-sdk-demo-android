@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:background="#8f3F51B5"
+        android:background="#2f000000"
         android:gravity="center"
         android:paddingBottom="5dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"

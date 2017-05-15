@@ -125,7 +125,7 @@ public class RecipeDetailFragment extends BaseFragment implements RecipeChangeLi
 
     private void initView() {
         if (!isCreate) {
-            transgerTimeZone(true);
+            transferTimeZone(true);
         }
         initLogicMap();
         initTriggerView();
@@ -245,10 +245,10 @@ public class RecipeDetailFragment extends BaseFragment implements RecipeChangeLi
             description = description + Utils.getDatapointName(getActivity(), triggerDataPoint);
             switch (triggerDataPoint.getType()) {
                 case Constant.BOOL_DT:
-                    description = description + getString(R.string.recipe_desc_trigger_status) + createRecipe.getTriggerVal().getValue();
+                    description = description + getString(R.string.recipe_desc_trigger_status) + ((int)Float.parseFloat(String.valueOf(createRecipe.getTriggerVal().getValue()))==1 ? true: false);
                     break;
                 case Constant.NUMBER_DT:
-                    description = description + logicMap.get(createRecipe.getTriggerVal().getOp()) + createRecipe.getTriggerVal().getValue();
+                    description = description + logicMap.get(createRecipe.getTriggerVal().getOp()) + Utils.parseFloat(Float.parseFloat(String.valueOf(createRecipe.getTriggerVal().getValue())), triggerDataPoint);
                     break;
                 case Constant.ENUM_DT:
                     description = description + logicMap.get("eq") + triggerDataPoint.get_enum().get((int) Float.parseFloat(String.valueOf(createRecipe.getTriggerVal().getValue())));
@@ -270,10 +270,10 @@ public class RecipeDetailFragment extends BaseFragment implements RecipeChangeLi
         } else {
             switch (actionDataPoint.getType()) {
                 case Constant.BOOL_DT:
-                    description = description + Utils.getDatapointName(getActivity(), actionDataPoint) + getString(R.string.recipe_desc_action_status) + action.getValue();
+                    description = description + Utils.getDatapointName(getActivity(), actionDataPoint) + getString(R.string.recipe_desc_action_status) + ((int)Float.parseFloat(String.valueOf(action.getValue())) == 1 ? true : false);
                     break;
                 case Constant.NUMBER_DT:
-                    description = description + Utils.getDatapointName(getActivity(), actionDataPoint) + getString(R.string.recipe_desc_action_status) + action.getValue();
+                    description = description + Utils.getDatapointName(getActivity(), actionDataPoint) + getString(R.string.recipe_desc_action_status) + Utils.parseFloat(Float.parseFloat(String.valueOf(action.getValue())), actionDataPoint);
                     break;
                 case Constant.ENUM_DT:
                     description = description + Utils.getDatapointName(getActivity(), actionDataPoint) + getString(R.string.recipe_desc_action_status) + actionDataPoint.get_enum().get((int) Float.parseFloat(String.valueOf(action.getValue())));
@@ -286,7 +286,7 @@ public class RecipeDetailFragment extends BaseFragment implements RecipeChangeLi
         createRecipe.setDescription(createRecipe.getDescription() + description);
     }
 
-    private void transgerTimeZone(boolean initial) {
+    private void transferTimeZone(boolean initial) {
         if (!Constant.RECIPE_TYPE_SCHEDULE.equals(createRecipe.getType())){
             return;
         }
@@ -300,7 +300,7 @@ public class RecipeDetailFragment extends BaseFragment implements RecipeChangeLi
         }
 
         if (hour > 23) {
-            if ("*".equals(crontab.getDay_of_week())) {
+            if (!"*".equals(crontab.getDay_of_week())) {
                 int week = Integer.parseInt(crontab.getDay_of_week());
                 week = week + 1;
                 if (week > 6) {
@@ -311,7 +311,7 @@ public class RecipeDetailFragment extends BaseFragment implements RecipeChangeLi
             hour = hour - 24;
             crontab.setHour(String.valueOf(hour));
         } else if (hour < 0) {
-            if ("*".equals(crontab.getDay_of_week())) {
+            if (!"*".equals(crontab.getDay_of_week())) {
                 int week = Integer.parseInt(crontab.getDay_of_week());
                 week = week - 1;
                 if (week < 0) {
@@ -343,7 +343,7 @@ public class RecipeDetailFragment extends BaseFragment implements RecipeChangeLi
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_save) {
             getDescription();
-            transgerTimeZone(false);
+            transferTimeZone(false);
             if (isCreate) {
                 IntoYunSdk.createRecipe(createRecipe, this);
             } else {

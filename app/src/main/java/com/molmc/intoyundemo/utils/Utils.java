@@ -198,4 +198,52 @@ public class Utils {
         systemDataPoint.add(message);
         return systemDataPoint;
     }
+
+    public static String toDecimal(float value, DataPointBean dataPoint){
+        String valueStr = String.valueOf(value);
+
+        int indexDot = valueStr.indexOf(".");
+
+        if (indexDot < 0){
+            if (dataPoint.getResolution()>0){
+                valueStr = valueStr + ".";
+            } else {
+                return valueStr;
+            }
+        } else {
+            if (dataPoint.getResolution()<=0){
+                valueStr = valueStr.split("\\.")[0];
+                return valueStr;
+            }
+        }
+        while (valueStr.length() <= indexDot + dataPoint.getResolution()){
+            valueStr = valueStr + "0";
+        }
+        return valueStr;
+    }
+
+    public static int parseDataPointType(DataPointBean dataPointBean){
+        if (Constant.BOOL_DT.equals(dataPointBean.getType())){
+            return 0;
+        } else if (Constant.NUMBER_DT.equals(dataPointBean.getType())){
+            return 1;
+        } else if (Constant.ENUM_DT.equals(dataPointBean.getType())){
+            return 2;
+        } else if (Constant.STRING_DT.equals(dataPointBean.getType())){
+            return 3;
+        } else if (Constant.EXTRA_DT.equals(dataPointBean.getType())){
+            return 4;
+        }
+        return 0;
+    }
+
+
+    public static int parseInt(String data, DataPointBean dataPointBean){
+        float fData = Float.valueOf(data);
+        return (int) ((fData - dataPointBean.getMin()) * Math.pow(10, dataPointBean.getResolution()));
+    }
+
+    public static float parseFloat(float data, DataPointBean dataPointBean){
+        return (float) (data/Math.pow(10, dataPointBean.getResolution())) + dataPointBean.getMin();
+    }
 }

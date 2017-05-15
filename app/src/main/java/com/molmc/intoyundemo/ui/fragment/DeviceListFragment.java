@@ -12,12 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
-import com.molmc.intoyunsdk.bean.DeviceBean;
-import com.molmc.intoyunsdk.mqtt.ReceiveListener;
-import com.molmc.intoyunsdk.network.IntoYunListener;
-import com.molmc.intoyunsdk.network.NetError;
-import com.molmc.intoyunsdk.openapi.IntoYunSdk;
-import com.molmc.intoyunsdk.utils.IntoUtil;
 import com.molmc.intoyundemo.R;
 import com.molmc.intoyundemo.support.adapter.DeviceAdapter;
 import com.molmc.intoyundemo.support.db.DeviceDataBase;
@@ -27,6 +21,12 @@ import com.molmc.intoyundemo.ui.activity.QRCaptureActivity;
 import com.molmc.intoyundemo.utils.DialogUtil;
 import com.molmc.intoyundemo.utils.Interface;
 import com.molmc.intoyundemo.utils.Utils;
+import com.molmc.intoyunsdk.bean.DeviceBean;
+import com.molmc.intoyunsdk.mqtt.ReceiveListener;
+import com.molmc.intoyunsdk.network.IntoYunListener;
+import com.molmc.intoyunsdk.network.NetError;
+import com.molmc.intoyunsdk.openapi.IntoYunSdk;
+import com.molmc.intoyunsdk.utils.IntoUtil;
 import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.Subscribe;

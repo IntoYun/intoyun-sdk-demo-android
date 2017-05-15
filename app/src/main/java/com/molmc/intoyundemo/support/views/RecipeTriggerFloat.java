@@ -2,6 +2,7 @@ package com.molmc.intoyundemo.support.views;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,8 @@ public class RecipeTriggerFloat extends LinearLayout implements BubbleSeekBar.On
     TextView tvLogic;
     @Bind(R.id.seekbarValue)
     BubbleSeekBar seekbarValue;
+    @Bind(R.id.txtValue)
+    TextView textValue;
 
     private RecipeBean.TriggerValBean triggerVal;
     private DataPointBean dataPoint;
@@ -45,6 +48,7 @@ public class RecipeTriggerFloat extends LinearLayout implements BubbleSeekBar.On
     private String[] logicOp;
     private String[] logicText;
     private Activity mContext;
+    private String unit;
 
     public RecipeTriggerFloat(Activity context) {
         this(context, null);
@@ -71,6 +75,8 @@ public class RecipeTriggerFloat extends LinearLayout implements BubbleSeekBar.On
         logicOp = getResources().getStringArray(R.array.logic_op);
         logicText = getResources().getStringArray(R.array.logic);
 
+        unit = TextUtils.isEmpty(dataPoint.getUnit()) ? "" : dataPoint.getUnit();
+
         String dpName = Utils.getDatapointName(getContext(), dataPoint);
         if (tvTitle != null) {
             tvTitle.setText(String.format(getResources().getString(R.string.recipe_trigger_title), dpName));
@@ -90,10 +96,13 @@ public class RecipeTriggerFloat extends LinearLayout implements BubbleSeekBar.On
                     break;
                 }
             }
-            seekbarValue.setProgress(Float.parseFloat(String.valueOf(triggerVal.getValue())));
+            float value = Utils.parseFloat(Float.parseFloat(String.valueOf(triggerVal.getValue())), dataPoint);
+            seekbarValue.setProgress(value);
+            textValue.setText(value + unit);
         } else {
             tvLogic.setText(logicText[0]);
             seekbarValue.setProgress(dataPoint.getMin());
+            textValue.setText(dataPoint.getMin() + unit);
         }
         seekbarValue.setOnProgressChangedListener(this);
     }
@@ -141,7 +150,9 @@ public class RecipeTriggerFloat extends LinearLayout implements BubbleSeekBar.On
 
     @Override
     public void onProgressChanged(int progress, float progressFloat) {
-        triggerVal.setValue(progressFloat);
+        String sendData = Utils.toDecimal(progressFloat, dataPoint);
+        textValue.setText(sendData + unit);
+        triggerVal.setValue(Utils.parseInt(sendData, dataPoint));
         listener.onTriggerChange(triggerVal);
     }
 
@@ -154,4 +165,6 @@ public class RecipeTriggerFloat extends LinearLayout implements BubbleSeekBar.On
     public void getProgressOnFinally(int progress, float progressFloat) {
 
     }
+
+
 }

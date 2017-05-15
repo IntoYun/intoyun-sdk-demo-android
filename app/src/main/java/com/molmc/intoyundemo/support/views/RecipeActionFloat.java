@@ -1,6 +1,7 @@
 package com.molmc.intoyundemo.support.views;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +36,13 @@ public class RecipeActionFloat extends LinearLayout implements BubbleSeekBar.OnP
     TextView tvLogic;
     @Bind(R.id.seekbarValue)
     BubbleSeekBar seekbarValue;
+    @Bind(R.id.txtValue)
+    TextView textValue;
 
     private RecipeBean.ActionValBean actionVal;
     private DataPointBean dataPoint;
     private RecipeChangeListener listener;
+    private String unit;
 
     public RecipeActionFloat(Activity context) {
         this(context, null);
@@ -61,6 +65,7 @@ public class RecipeActionFloat extends LinearLayout implements BubbleSeekBar.OnP
         this.actionVal = actionVal;
         this.dataPoint = dataPoint;
         this.listener = listener;
+        unit = TextUtils.isEmpty(dataPoint.getUnit()) ? "" : dataPoint.getUnit();
 
         String dpName = Utils.getDatapointName(getContext(), dataPoint);
         if (tvTitle != null) {
@@ -78,9 +83,12 @@ public class RecipeActionFloat extends LinearLayout implements BubbleSeekBar.OnP
                 .build();
 
         if (!IntoUtil.Empty.check(actionVal.getValue())) {
-            seekbarValue.setProgress(Float.parseFloat(String.valueOf(actionVal.getValue())));
+            float value = Utils.parseFloat(Float.parseFloat(String.valueOf(actionVal.getValue())), dataPoint);
+            seekbarValue.setProgress(value);
+            textValue.setText(value + unit);
         } else {
             seekbarValue.setProgress(dataPoint.getMin());
+            textValue.setText(dataPoint.getMin() + unit);
         }
         seekbarValue.setOnProgressChangedListener(this);
     }
@@ -94,7 +102,9 @@ public class RecipeActionFloat extends LinearLayout implements BubbleSeekBar.OnP
 
     @Override
     public void onProgressChanged(int progress, float progressFloat) {
-        actionVal.setValue(progressFloat);
+        String sendData = Utils.toDecimal(progressFloat, dataPoint);
+        textValue.setText(sendData + unit);
+        actionVal.setValue(Utils.parseInt(sendData, dataPoint));
         listener.onActionChange(actionVal);
     }
 

@@ -7,11 +7,15 @@
 	<color name="colorPrimary">#00c6ff</color>
 	<color name="colorPrimaryDark">#00c6ff</color>
 	<color name="colorAccent">@color/color_blue</color>
-	<color name="colorAccentPressed">#af03A9F4</color>
+	<color name="colorAccentPressed">#aa00c6ff</color>
+	<color name="toolbarColorStart">#00a8ff</color>
 
-	<color name="body_text_color">#0e0d0d</color>
+	<color name="body_text_color">#232222</color>
 	<color name="text_hint_color">#686868</color>
 	<color name="list_item_pressed">#7f303F9F</color>
+	<color name="text_hint_white_color">#99ffffff</color>
+	<color name="backgroundColor">#f6f6f6</color>
+
 
 
 	<color name="green">#18ca18</color>
@@ -38,7 +42,7 @@
 
 	<color name="color_red">#FF6A6E</color>
 	<color name="color_red_light">#FFB4B6</color>
-	<color name="color_blue">#03A9F4</color>
+	<color name="color_blue">#00c6ff</color>
 	<color name="color_gray_light">#F5F5F5</color>
 	<color name="color_gray">#B4B4B4</color>
 

@@ -87,7 +87,7 @@ public class SetActionFragment extends BaseFragment implements RecipeChangeListe
         } else if (dataPoint != null) {
             if (dataPoint.getType().equals(Constant.BOOL_DT)) {
                 RecipeActionBool boolView = new RecipeActionBool(getActivity());
-                createRecipe.getActionVal().get(0).setValue(false);
+                createRecipe.getActionVal().get(0).setValue(1);
                 boolView.initData(createRecipe.getActionVal().get(0), dataPoint, this);
                 layContainer.addView(boolView, 0);
             } else if (dataPoint.getType().equals(Constant.NUMBER_DT)) {

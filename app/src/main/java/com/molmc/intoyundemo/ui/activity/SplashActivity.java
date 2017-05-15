@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.molmc.intoyundemo.R;
 import com.molmc.intoyunsdk.network.model.response.UserResult;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyunsdk.utils.IntoYunSharedPrefs;
-import com.molmc.intoyundemo.R;
 
 import java.util.Timer;
 import java.util.TimerTask;

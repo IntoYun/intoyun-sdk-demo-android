@@ -89,6 +89,7 @@ public class DataPointDataBase {
         if (IntoUtil.Empty.check(dataPoints)){
             return;
         }
+        dbOpenHelper.clear();
         for (String productId : dataPoints.keySet()) {
             //调用insert()方法插入数据
             for (DataPointBean dataPoint : dataPoints.get(productId)){

@@ -14,6 +14,7 @@ import android.widget.ScrollView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.molmc.intoyundemo.support.views.WidgetExtra;
+import com.molmc.intoyundemo.utils.AppSharedPref;
 import com.molmc.intoyunsdk.bean.DataPointBean;
 import com.molmc.intoyunsdk.bean.DeviceBean;
 import com.molmc.intoyunsdk.mqtt.PublishListener;
@@ -85,6 +86,7 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
             deviceBean = (DeviceBean) getArguments().get("deviceBean");
             dataPoints = DataPointDataBase.getInstance(getActivity()).getDataPoints(deviceBean.getPidImp());
         }
+        deviceBean.setAccessMode(AppSharedPref.getInstance(getActivity()).getBoarInfo(deviceBean.getBoard()).getAccessMode());
         BaseActivity baseActivity = (BaseActivity) getActivity();
         baseActivity.getSupportActionBar().setTitle(deviceBean.getName());
         setHasOptionsMenu(false);
@@ -160,7 +162,7 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
                 }
             });
         } else {
-            IntoYunSdk.sendDataToDevice(deviceBean.getDeviceId(), payload, dataPoint, this);
+            IntoYunSdk.sendDataToDevice(deviceBean.getDeviceId(), payload, dataPoint, "binary", this);
         }
     }
 
@@ -173,7 +175,6 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
         DataPointEvent dataPointEvent = new DataPointEvent();
         dataPointEvent.setPayload(map);
         EventBus.getDefault().post(dataPointEvent);
-
     }
 
     @Override
@@ -201,7 +202,7 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
                 @Override
                 public void run() {
                     //将ScrollView滚动到底
-                    if (mScrollView != null) mScrollView.fullScroll(View.FOCUS_DOWN);
+//                    if (mScrollView != null) mScrollView.fullScroll(View.FOCUS_DOWN);
                     EventBus.getDefault().post(Constant.EVENT_SCROLL);
                 }
             }, 100);

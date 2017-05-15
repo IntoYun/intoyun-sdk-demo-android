@@ -80,9 +80,11 @@ public class DeviceDataBase {
         if (IntoUtil.Empty.check(devices)){
             return;
         }
+        dbOpenHelper.clear();
         for (DeviceBean device: devices) {
             //调用insert()方法插入数据
-            dbOpenHelper.insert(TABLE_NAME, getDeviceContentValue(device));
+//            updateDevice(device);
+            dbOpenHelper.replace(TABLE_NAME, getDeviceContentValue(device));
         }
     }
 
