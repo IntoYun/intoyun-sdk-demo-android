@@ -162,7 +162,7 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
                 }
             });
         } else {
-            IntoYunSdk.sendDataToDevice(deviceBean.getDeviceId(), payload, dataPoint, "binary", this);
+            IntoYunSdk.sendDataToDevice(deviceBean.getDeviceId(), payload, dataPoint, this);
         }
     }
 

@@ -7,7 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/bubbleseekbar/bubbleseekbar.iml" filepath="$PROJECT_DIR$/bubbleseekbar/bubbleseekbar.iml" />
       <module fileurl="file://$PROJECT_DIR$/intorobot-androidsdk.iml" filepath="$PROJECT_DIR$/intorobot-androidsdk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/intoyunsdk/intoyunsdk.iml" filepath="$PROJECT_DIR$/intoyunsdk/intoyunsdk.iml" />
     </modules>
   </component>
 </project>

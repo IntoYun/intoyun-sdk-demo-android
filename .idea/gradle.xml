@@ -11,7 +11,6 @@
             <option value="$PROJECT_DIR$/actionsheet" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/bubbleseekbar" />
-            <option value="$PROJECT_DIR$/intoyunsdk" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
