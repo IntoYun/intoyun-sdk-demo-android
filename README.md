@@ -87,6 +87,6 @@ IntoYunSharedPrefs.getAppToken(context);
 
 # 更新记录
 
-* 2017-6-10 
+### 2017-6-10 
 - 1、修复获取设备状态功能
 - 2、修改数值型数据点发送数据失效的bug
