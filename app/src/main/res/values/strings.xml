@@ -51,6 +51,13 @@
 	<string name="device_pub_text">发送数据</string>
 	<string name="device_wifi_config">配置设备</string>
 	<string name="device_description">设备%1$s创建于%2$s</string>
+	<string name="color_dialog_title">选择颜色</string>
+	<string name="btn_color">颜色</string>
+	<string name="btn_mode">模式</string>
+	<string name="btn_lightness">亮度</string>
+	<string name="darkness">暗</string>
+	<string name="lightness">亮</string>
+
 
 	<string name="mine">我的</string>
 

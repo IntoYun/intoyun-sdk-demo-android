@@ -12,7 +12,7 @@
 
 ```
 dependencies {
-	compile 'com.molmc.intoyun:intoyunsdk:1.0.3'
+	compile 'com.molmc.intoyun:intoyunsdk:1.0.4'
 }
 ```
 
@@ -83,3 +83,10 @@ IntoYunSharedPrefs.getAppToken(context);
 ```
 
 * 一旦出现App Token过期，需要用户手动调用该接口刷新App Token。
+
+
+# 更新记录
+
+* 2017-6-10 
+- 1、修复获取设备状态功能
+- 2、修改数值型数据点发送数据失效的bug

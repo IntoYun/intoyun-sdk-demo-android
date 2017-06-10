@@ -15,6 +15,7 @@ import com.molmc.intoyundemo.R;
 import com.molmc.intoyundemo.support.db.DataPointDataBase;
 import com.molmc.intoyundemo.ui.fragment.DeviceFragment;
 import com.molmc.intoyundemo.ui.fragment.DeviceInfoFragment;
+import com.molmc.intoyundemo.ui.fragment.SmartLightFragment;
 import com.molmc.intoyundemo.utils.AppSharedPref;
 import com.molmc.intoyundemo.utils.DialogUtil;
 import com.molmc.intoyundemo.utils.Utils;
@@ -126,7 +127,11 @@ public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.
                     DialogUtil.showToast(R.string.err_data_point_not_found);
                     return;
                 }
-                DeviceFragment.launch((Activity) mContext, device);
+                if ("o8KOYgFBkowGnEd5".equals(device.getPidImp())) {
+                    SmartLightFragment.launch((Activity) mContext, device);
+                } else {
+                    DeviceFragment.launch((Activity) mContext, device);
+                }
             }
         };
     }
