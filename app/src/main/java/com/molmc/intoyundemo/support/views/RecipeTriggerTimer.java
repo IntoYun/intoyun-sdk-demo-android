@@ -123,9 +123,13 @@ public class RecipeTriggerTimer extends LinearLayout implements TimePickerDialog
 
                     @Override
                     public void onButtonClicked(ActionSheet actionSheet, int index) {
-                        if (index<list.length) {
+                        if (index < list.length) {
                             tvRepeat.setText(list[index]);
-                            crontab.setDay_of_week(String.valueOf(index));
+                            if (index == 7) {
+                                crontab.setDay_of_week("*");
+                            } else {
+                                crontab.setDay_of_week(String.valueOf(index));
+                            }
                             listener.onCrontabChange(crontab);
                         }
                     }

@@ -13,15 +13,6 @@ import android.widget.ScrollView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.molmc.intoyundemo.support.views.WidgetExtra;
-import com.molmc.intoyundemo.utils.AppSharedPref;
-import com.molmc.intoyunsdk.bean.DataPointBean;
-import com.molmc.intoyunsdk.bean.DeviceBean;
-import com.molmc.intoyunsdk.mqtt.PublishListener;
-import com.molmc.intoyunsdk.mqtt.ReceiveListener;
-import com.molmc.intoyunsdk.network.IntoYunListener;
-import com.molmc.intoyunsdk.network.NetError;
-import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyundemo.R;
 import com.molmc.intoyundemo.bean.FragmentArgs;
 import com.molmc.intoyundemo.support.db.DataPointDataBase;
@@ -29,11 +20,18 @@ import com.molmc.intoyundemo.support.eventbus.DataPointEvent;
 import com.molmc.intoyundemo.support.views.OnChangeListener;
 import com.molmc.intoyundemo.support.views.WidgetBool;
 import com.molmc.intoyundemo.support.views.WidgetEnum;
+import com.molmc.intoyundemo.support.views.WidgetExtra;
 import com.molmc.intoyundemo.support.views.WidgetFloat;
 import com.molmc.intoyundemo.support.views.WidgetString;
 import com.molmc.intoyundemo.ui.activity.BaseActivity;
 import com.molmc.intoyundemo.ui.activity.FragmentCommonActivity;
 import com.molmc.intoyundemo.utils.Constant;
+import com.molmc.intoyunsdk.bean.DataPointBean;
+import com.molmc.intoyunsdk.bean.DeviceBean;
+import com.molmc.intoyunsdk.mqtt.PublishListener;
+import com.molmc.intoyunsdk.mqtt.ReceiveListener;
+import com.molmc.intoyunsdk.network.NetError;
+import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,7 +54,7 @@ import static com.molmc.intoyundemo.utils.Constant.STRING_DT;
  * Email：   hhe@molmc.com
  */
 
-public class DeviceFragment extends BaseFragment implements OnChangeListener, ReceiveListener, PublishListener, ViewTreeObserver.OnGlobalLayoutListener {
+public class DeviceFragment extends BaseFragment implements OnChangeListener, ReceiveListener, ViewTreeObserver.OnGlobalLayoutListener {
 
     public static void launch(Activity from, DeviceBean deviceBean) {
         FragmentArgs args = new FragmentArgs();
@@ -86,12 +84,12 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
             deviceBean = (DeviceBean) getArguments().get("deviceBean");
             dataPoints = DataPointDataBase.getInstance(getActivity()).getDataPoints(deviceBean.getPidImp());
         }
-        deviceBean.setAccessMode(AppSharedPref.getInstance(getActivity()).getBoarInfo(deviceBean.getBoard()).getAccessMode());
+        deviceBean.setAccessMode(IntoYunSdk.boardToName(deviceBean.getBoard()));
         BaseActivity baseActivity = (BaseActivity) getActivity();
         baseActivity.getSupportActionBar().setTitle(deviceBean.getName());
         setHasOptionsMenu(false);
         setDeviceWidget();
-        IntoYunSdk.subscribeDataFromDevice(deviceBean.getDeviceId(), dataPoints, this);
+        IntoYunSdk.subscribeDataFromDevice(deviceBean, dataPoints, this);
         mScrollView.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
@@ -143,27 +141,22 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
     @Override
     public void onDestroy() {
         super.onDestroy();
-        IntoYunSdk.unSubscribeDataFromDevice(deviceBean.getDeviceId());
+        IntoYunSdk.unSubscribeDataFromDevice(deviceBean);
     }
 
     @Override
     public void onChanged(Object payload, DataPointBean dataPoint) {
-        Logger.i(String.valueOf(payload));
-        if (deviceBean.getAccessMode().equals("LoRa")) {
-            IntoYunSdk.sendCmdToDevice(payload, deviceBean, dataPoint, new IntoYunListener() {
-                @Override
-                public void onSuccess(Object result) {
+        Logger.i(String.valueOf(payload));IntoYunSdk.sendDataToDevice(deviceBean, payload, dataPoint, new PublishListener() {
+            @Override
+            public void onSuccess(String topic) {
 
-                }
+            }
 
-                @Override
-                public void onFail(NetError error) {
-                    showToast(error.getMessage());
-                }
-            });
-        } else {
-            IntoYunSdk.sendDataToDevice(deviceBean.getDeviceId(), payload, dataPoint, this);
-        }
+            @Override
+            public void onFailed(String topic, String errMsg) {
+                showToast(errMsg);
+            }
+        });
     }
 
     @Override
@@ -184,13 +177,9 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
 
     @Override
     public void onSuccess(String topic) {
-        IntoYunSdk.getDeviceStatus(deviceBean.getDeviceId());
+        IntoYunSdk.getDeviceStatus(deviceBean);
     }
 
-    @Override
-    public void onFailed(String topic, String errMsg) {
-        showToast(errMsg);
-    }
 
     @Override
     public void onGlobalLayout() {

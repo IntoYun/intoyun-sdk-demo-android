@@ -105,7 +105,7 @@ public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.
 
     private void initView(DeviceBean dev, DeviceNode holder, int position) {
         holder.txtName.setText(dev.getName());
-        holder.txtAccessMode.setText(boardInfoBeanMap.get(dev.getBoard()).getAccessMode());
+        holder.txtAccessMode.setText(IntoYunSdk.boardToName(dev.getBoard()));
         Glide.with(mContext).load(com.molmc.intoyunsdk.openapi.Constant.INTOYUN_HTTP_HOST + dev.getImgSrc()).placeholder(defaultDrawables[position % defaultDrawables.length])
                 .bitmapTransform(new RoundedCornersTransformation(mContext, Utils.dip2px(40), 0)).into(holder.imgPhoto);
         holder.itemDevice.setOnClickListener(onClickListener(holder, dev));

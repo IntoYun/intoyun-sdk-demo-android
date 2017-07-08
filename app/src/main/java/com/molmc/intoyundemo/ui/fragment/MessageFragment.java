@@ -64,8 +64,10 @@ public class MessageFragment extends BaseRefreshFragment implements IntoYunListe
                     return 1;
                 }
             });
+            simpleRecyclerViewAdapter.setData(messages);
+        } else {
+            finishRefresh();
         }
-        simpleRecyclerViewAdapter.setData(messages);
     }
 
     @Override

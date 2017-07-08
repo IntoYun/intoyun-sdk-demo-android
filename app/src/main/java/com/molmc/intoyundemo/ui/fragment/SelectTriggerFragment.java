@@ -18,6 +18,7 @@ import com.molmc.intoyunsdk.bean.BoardInfoBean;
 import com.molmc.intoyunsdk.bean.DataPointBean;
 import com.molmc.intoyunsdk.bean.DeviceBean;
 import com.molmc.intoyunsdk.bean.RecipeBean;
+import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyunsdk.utils.IntoUtil;
 import com.molmc.intoyundemo.R;
 import com.molmc.intoyundemo.bean.FragmentArgs;
@@ -144,9 +145,14 @@ public class SelectTriggerFragment extends BaseFragment implements ClickGridItem
             createRecipe.setCrontab(crontab);
             createRecipe.setTriggerVal(new RecipeBean.TriggerValBean());
         } else {
+            String topicMode = "device";
+            if (IntoYunSdk.isLoRaNode(selectDevice.getBoard())){
+                topicMode = "lora";
+            }
+            String from = "v2/" + topicMode + '/' + deviceId + "/rx";
             createRecipe.setType(Constant.RECIPE_TYPE_RECIPE);
             RecipeBean.TriggerValBean triggerVal = new RecipeBean.TriggerValBean();
-            triggerVal.setFrom(deviceId);
+            triggerVal.setFrom(from);
             triggerVal.setDpId(selectDataPoint.getDpId());
             triggerVal.setDpType(Utils.parseDataPointType(selectDataPoint));
             triggerVal.setOp("eq");
@@ -179,7 +185,7 @@ public class SelectTriggerFragment extends BaseFragment implements ClickGridItem
         List<DeviceBean> devices = DeviceDataBase.getInstance(getActivity()).getDevices();
         List<DeviceBean> deviceFilters = new ArrayList<>();
         for (DeviceBean device : devices) {
-            if (!"LoRa".equals(boardInfoBeanMap.get(device.getBoard()).getAccessMode()) && filterDataPoint(device.getPidImp()).size() > 0) {
+            if (!IntoYunSdk.isGateway(device.getBoard()) && filterDataPoint(device.getPidImp()).size() > 0) {
                 deviceFilters.add(device);
             }
         }

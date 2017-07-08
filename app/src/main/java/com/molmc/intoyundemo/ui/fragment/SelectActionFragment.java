@@ -19,6 +19,7 @@ import com.molmc.intoyunsdk.bean.BoardInfoBean;
 import com.molmc.intoyunsdk.bean.DataPointBean;
 import com.molmc.intoyunsdk.bean.DeviceBean;
 import com.molmc.intoyunsdk.bean.RecipeBean;
+import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyunsdk.utils.IntoUtil;
 import com.molmc.intoyunsdk.utils.IntoYunSharedPrefs;
 import com.molmc.intoyundemo.R;
@@ -147,11 +148,17 @@ public class SelectActionFragment extends BaseFragment implements ClickGridItemL
             actionVal.setType(Constant.RECIPE_ACTION_EMAIL);
             actionVal.setTo(IntoYunSharedPrefs.getUserInfo(getActivity()).getEmail());
         } else if (Constant.RECIPE_ACTION_MSGBOX.equals(selectDataPoint.getType())) {
+            String to = "v2/user/" + IntoYunSharedPrefs.getUserInfo(getActivity()).getUid() + "/rx";
             actionVal.setType(Constant.RECIPE_ACTION_MSGBOX);
-            actionVal.setTo(IntoYunSharedPrefs.getUserInfo(getActivity()).getUid());
+            actionVal.setTo(to);
         } else {
+            String topicMode = "device";
+            if (IntoYunSdk.isLoRaNode(selectDevice.getBoard())){
+                topicMode = "lora";
+            }
+            String to = "v2/" + topicMode + '/' + deviceId + "/tx";
             actionVal.setType(Constant.RECIPE_ACTION_MQTT);
-            actionVal.setTo(deviceId);
+            actionVal.setTo(to);
         }
         List<RecipeBean.ActionValBean> actionValList = new ArrayList<>();
         actionValList.add(actionVal);
@@ -181,7 +188,7 @@ public class SelectActionFragment extends BaseFragment implements ClickGridItemL
         List<DeviceBean> devices = DeviceDataBase.getInstance(getActivity()).getDevices();
         List<DeviceBean> deviceFilters = new ArrayList<>();
         for (DeviceBean device : devices) {
-            if (!"LoRa".equals(boardInfoBeanMap.get(device.getBoard()).getAccessMode()) && filterDataPoint(device.getPidImp()).size() > 0) {
+            if (!IntoYunSdk.isGateway(device.getBoard()) && filterDataPoint(device.getPidImp()).size() > 0) {
                 deviceFilters.add(device);
             }
         }

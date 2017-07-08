@@ -12,7 +12,7 @@
 
 ```
 dependencies {
-	compile 'com.molmc.intoyun:intoyunsdk:1.0.4'
+	compile 'com.molmc.intoyun:intoyunsdk:1.1.0'
 }
 ```
 
@@ -54,7 +54,7 @@ public class IntoYunApplication extends Application {
 ```
 **【注意事项】**
 
-* **appId** 即在开发平台上创建应用时生成的**应用ID**，**appSecret**为**appId**对应的**应用密钥**；
+* **appKey** 即在开发平台上创建应用时生成的**应用Key**，**appSecret**为**appKey**对应的**应用密钥**；
 * **IntoYunSdk.openLog(true)** 方法设置打印调试信息，默认为false，不打印调试信息。
 
 (2) Session管理
@@ -86,6 +86,11 @@ IntoYunSharedPrefs.getAppToken(context);
 
 
 # 更新记录
+
+### 2017-7-8 
+- 1、增加对LoRa和Gateway网关设备的支持
+- 2、更新关联控制设置
+- 3、增加智能灯控制
 
 ### 2017-6-10 
 - 1、修复获取设备状态功能

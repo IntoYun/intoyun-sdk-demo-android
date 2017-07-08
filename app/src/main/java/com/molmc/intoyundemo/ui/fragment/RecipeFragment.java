@@ -75,8 +75,12 @@ public class RecipeFragment extends BaseRefreshFragment implements SwipeRefreshL
 
     @Override
     public void onSuccess(List<RecipeBean> result) {
-        recipes = result;
-        recipeAdapter.setData(recipes);
+        if (result!=null && result.size()>0) {
+            recipes = result;
+            recipeAdapter.setData(recipes);
+        } else {
+            finishRefresh();
+        }
     }
 
     @Override

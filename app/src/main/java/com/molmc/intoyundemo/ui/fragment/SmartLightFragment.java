@@ -112,7 +112,7 @@ public class SmartLightFragment extends BaseFragment implements ReceiveListener,
         setHasOptionsMenu(false);
         setDeviceWidget();
         lightnessSeekBar.setOnSeekBarChangeListener(this);
-        IntoYunSdk.subscribeDataFromDevice(deviceBean.getDeviceId(), dataPoints, this);
+        IntoYunSdk.subscribeDataFromDevice(deviceBean, dataPoints, this);
     }
 
     private void setDeviceWidget() {
@@ -154,7 +154,7 @@ public class SmartLightFragment extends BaseFragment implements ReceiveListener,
 
     @Override
     public void onSuccess(String topic) {
-        IntoYunSdk.getDeviceStatus(deviceBean.getDeviceId());
+        IntoYunSdk.getDeviceStatus(deviceBean);
     }
 
     @Override
@@ -177,7 +177,7 @@ public class SmartLightFragment extends BaseFragment implements ReceiveListener,
                 }
             });
         } else {
-            IntoYunSdk.sendDataToDevice(deviceBean.getDeviceId(), payload, dataPoint, new PublishListener() {
+            IntoYunSdk.sendDataToDevice(deviceBean, payload, dataPoint, new PublishListener() {
                 @Override
                 public void onSuccess(String topic) {
                     Logger.i("publish success");
@@ -196,7 +196,7 @@ public class SmartLightFragment extends BaseFragment implements ReceiveListener,
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
-        IntoYunSdk.unSubscribeDataFromDevice(deviceBean.getDeviceId());
+        IntoYunSdk.unSubscribeDataFromDevice(deviceBean);
     }
 
     @OnClick({R.id.smartLightSwitch, R.id.btnColor, R.id.btnMode, R.id.btnLightness})

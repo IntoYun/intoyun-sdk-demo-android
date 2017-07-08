@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name">IntoYunSDK</string>
+	<string name="app_name">IntoYunDemo</string>
 	<string name="action_settings">Settings</string>
 
 	<string name="comm_hint_exit">再按一次退出</string>

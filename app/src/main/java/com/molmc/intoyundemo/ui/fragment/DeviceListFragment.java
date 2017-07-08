@@ -1,8 +1,12 @@
 package com.molmc.intoyundemo.ui.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,6 +53,7 @@ import butterknife.ButterKnife;
 public class DeviceListFragment extends BaseRefreshFragment implements IntoYunListener<List<DeviceBean>>, ReceiveListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String TAG = "DeviceListFragment";
+    public static final int PERMISSION_CAMERA = 1988;
 
     public static DeviceListFragment newInstance() {
         DeviceListFragment fragment = new DeviceListFragment();
@@ -124,11 +129,24 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
             ImlinkNetworkFragment.launch(getActivity());
             return true;
         } else if (id == R.id.menu_qr_scan) {
-            QRCaptureActivity.launch(getActivity());
+            String requestPermission[] = new String[]{Manifest.permission.CAMERA};
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(requestPermission, PERMISSION_CAMERA);
+            } else {
+                QRCaptureActivity.launch(getActivity());
+            }
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_CAMERA) {
+            QRCaptureActivity.launch(getActivity());
+        }
     }
 
     @Override
@@ -137,12 +155,13 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
             for (String deviceId : deviceStatus.keySet()) {
                 result = setDeviceStatus(deviceId, deviceStatus.get(deviceId), result);
             }
+            devices = result;
+            deviceAdapter.changeData(result);
+            DeviceDataBase.getInstance(getActivity()).saveDevices(devices);
+            subDeviceStatus();
+        } else {
+            finishRefresh();
         }
-        devices = result;
-        deviceAdapter.changeData(result);
-        DeviceDataBase.getInstance(getActivity()).saveDevices(devices);
-
-        subDeviceStatus();
     }
 
 
@@ -171,7 +190,7 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
     private void subDeviceStatus() {
         if (devices != null) {
             for (DeviceBean device : devices) {
-                IntoYunSdk.subscribeDeviceInfo(device.getDeviceId(), this);
+                IntoYunSdk.subscribeDeviceInfo(device, this);
             }
         }
     }
@@ -222,7 +241,7 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
             return;
         }
         for (DeviceBean device : devices) {
-            IntoYunSdk.unSubscribeDataFromDevice(device.getDeviceId());
+            IntoYunSdk.unSubscribeDataFromDevice(device);
         }
     }
 
