@@ -12,7 +12,7 @@
 
 ```
 dependencies {
-	compile 'com.molmc.intoyun:intoyunsdk:1.1.0'
+	compile 'com.molmc.intoyun:intoyunsdk:1.1.1'
 }
 ```
 
@@ -85,7 +85,18 @@ IntoYunSharedPrefs.getAppToken(context);
 * 一旦出现App Token过期，需要用户手动调用该接口刷新App Token。
 
 
+## App调试：
+
+登录IntoYun平台，进入**产品管理 -> App开发**如下图所示，打开App二维码扫描功能，即可启动虚拟设备进行app数据点调试。
+
+![](./image/virtual_scan.png)
+
+
 # 更新记录
+### 2017-7-20 
+- 1、增加扫描模拟设备二维码，生成调试设备
+- 2、修复字符型数据点输入中文错误的bug
+- 3、设置透传型数据点16进制字符，输入的字符数一定是偶数个
 
 ### 2017-7-8 
 - 1、增加对LoRa和Gateway网关设备的支持

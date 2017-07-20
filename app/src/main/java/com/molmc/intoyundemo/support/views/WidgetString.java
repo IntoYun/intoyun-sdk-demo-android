@@ -56,6 +56,7 @@ public class WidgetString extends LinearLayout implements View.OnClickListener {
 		etContent = (EditText) view.findViewById(R.id.etContent);
 		btnSend = (TextView) view.findViewById(R.id.btnSend);
 		tvValue = (TextView) view.findViewById(R.id.txtValue);
+		etContent.setHint(R.string.input_hint);
 		addView(view, params);
 		EventBus.getDefault().register(this);
 	}
@@ -73,9 +74,11 @@ public class WidgetString extends LinearLayout implements View.OnClickListener {
 		if (dataPoint.getDirection() == Constant.TRANSFROM_DATA) {
 			tvValue.setVisibility(VISIBLE);
 			etContent.setVisibility(GONE);
+			btnSend.setVisibility(GONE);
 		} else {
 			tvValue.setVisibility(GONE);
 			etContent.setVisibility(VISIBLE);
+			btnSend.setVisibility(VISIBLE);
 		}
 	}
 

@@ -31,6 +31,7 @@
 	<string name="resend_sms">点击重新获取</string>
 	<string name="resend_sms_count">重新获取(%d)</string>
 	<string name="input_hint">请输入内容</string>
+	<string name="input_hex_hint">请输入16进制0-F</string>
 	<string name="change_username">修改昵称</string>
 	<string name="change_password_title">修改密码</string>
 	<string name="current_pwd">当前密码</string>
@@ -151,6 +152,9 @@
 	<string name="err_devname_empty">设备名称不能为空</string>
 	<string name="err_devdesc_empty">设备描述不能为空</string>
 	<string name="err_send">发送失败</string>
+
+	<string name="err_vir_dev">该设备为虚拟设备</string>
+	<string name="err_input_hex">请输入16进制数据</string>
 
 	<string name="err_tips">错误提示</string>
 	<string name="err_login_expire">登陆过期，点击确认重新登陆</string>

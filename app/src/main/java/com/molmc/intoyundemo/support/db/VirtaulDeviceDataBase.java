@@ -16,11 +16,11 @@ import java.util.List;
  * Created by hehui on 17/3/27.
  */
 
-public class DeviceDataBase {
+public class VirtaulDeviceDataBase {
 
     private static final String DB_NAME = "intoyun_sdk_demo";
     private static final int DB_VERSION = 1;
-    private static final String TABLE_NAME = "device";
+    private static final String TABLE_NAME = "virtual_device";
     private static DBOpenHelper dbOpenHelper;
 
     private static final String DEVICE_ID = "deviceId";
@@ -37,16 +37,16 @@ public class DeviceDataBase {
     private static final String UID = "uid";
 
     private Context sContext;
-    private static DeviceDataBase deviceDataBase;
+    private static VirtaulDeviceDataBase deviceDataBase;
 
-    public DeviceDataBase(Context context) {
+    public VirtaulDeviceDataBase(Context context) {
         sContext = context;
         dbOpenHelper = DBOpenHelper.getInstance(context, DB_NAME, DB_VERSION);
     }
 
-    public static DeviceDataBase getInstance(Context context) {
+    public static VirtaulDeviceDataBase getInstance(Context context) {
         if (deviceDataBase == null) {
-            deviceDataBase = new DeviceDataBase(context);
+            deviceDataBase = new VirtaulDeviceDataBase(context);
         }
         return deviceDataBase;
     }

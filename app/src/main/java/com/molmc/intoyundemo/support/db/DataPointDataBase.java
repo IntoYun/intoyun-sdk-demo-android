@@ -92,8 +92,10 @@ public class DataPointDataBase {
         dbOpenHelper.clear();
         for (String productId : dataPoints.keySet()) {
             //调用insert()方法插入数据
-            for (DataPointBean dataPoint : dataPoints.get(productId)){
-                dbOpenHelper.replace(TABLE_NAME, getDataPointContentValue(dataPoint, productId));
+            if (dataPoints.get(productId) != null) {
+                for (DataPointBean dataPoint : dataPoints.get(productId)) {
+                    dbOpenHelper.replace(TABLE_NAME, getDataPointContentValue(dataPoint, productId));
+                }
             }
         }
     }

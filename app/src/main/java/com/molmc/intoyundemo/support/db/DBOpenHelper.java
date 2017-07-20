@@ -32,6 +32,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         createTableList = new ArrayList<String>();
         createTableList.addAll(DataPointDataBase.getTableSql());
         createTableList.addAll(DeviceDataBase.getTableSql());
+        createTableList.addAll(VirtaulDeviceDataBase.getTableSql());
     }
 
     /**

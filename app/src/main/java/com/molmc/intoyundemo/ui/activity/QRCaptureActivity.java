@@ -20,17 +20,25 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
-import com.molmc.intoyunsdk.bean.DeviceBean;
-import com.molmc.intoyunsdk.network.IntoYunListener;
-import com.molmc.intoyunsdk.network.NetError;
-import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyundemo.R;
 import com.molmc.intoyundemo.bean.QrDeviceBean;
+import com.molmc.intoyundemo.support.db.VirtaulDeviceDataBase;
+import com.molmc.intoyundemo.support.eventbus.UpdateDevice;
 import com.molmc.intoyundemo.support.zxing.camera.CameraManager;
 import com.molmc.intoyundemo.support.zxing.decoding.CaptureActivityHandler;
 import com.molmc.intoyundemo.support.zxing.decoding.InactivityTimer;
 import com.molmc.intoyundemo.support.zxing.view.ViewfinderView;
+import com.molmc.intoyunsdk.bean.DeviceBean;
+import com.molmc.intoyunsdk.mqtt.PublishListener;
+import com.molmc.intoyunsdk.network.IntoYunListener;
+import com.molmc.intoyunsdk.network.NetError;
+import com.molmc.intoyunsdk.openapi.IntoYunSdk;
+import com.molmc.intoyunsdk.utils.IntoUtil;
 import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -87,6 +95,9 @@ public class QRCaptureActivity extends BaseActivity implements Callback {
     private MediaPlayer mediaPlayer;
     private boolean playBeep;
     private boolean vibrate;
+
+    private String productId;
+    private String deviceId;
 
     private Type type;
     private QrDeviceBean qrBean;
@@ -213,19 +224,30 @@ public class QRCaptureActivity extends BaseActivity implements Callback {
         playBeepSoundAndVibrate();
         Pattern pattern = Pattern.compile("^[A-Za-z0-9]{16,24}");
         if (pattern.matcher(resultText).matches()) {
-            IntoYunSdk.bindDevice(resultText, new IntoYunListener() {
-                @Override
-                public void onSuccess(Object result) {
-                    Logger.i(new Gson().toJson(result));
-                    QRCaptureActivity.this.finish();
+            bindDevice(resultText, false);
+
+        } else if (resultText.contains("virDeviceId") && resultText.contains("productId")) {
+            try {
+                JSONObject jsonObject = new JSONObject(resultText);
+                deviceId = jsonObject.optString("virDeviceId");
+                productId = jsonObject.getString("productId");
+
+                if (VirtaulDeviceDataBase.getInstance(this).getDeviceById(deviceId)!=null){
+                    notifyVirtual();
+                    return;
                 }
 
-                @Override
-                public void onFail(NetError error) {
-                    showToast(error.getMessage());
-                }
-            });
+                DeviceBean virDev = new DeviceBean();
+                virDev.setDeviceId(deviceId);
+                virDev.setPidImp(productId);
+                virDev.setName("virDev" + deviceId.substring(deviceId.length() - 4));
+                virDev.setBindAt(IntoUtil.getCurrentTimeSecond());
+                VirtaulDeviceDataBase.getInstance(this).saveDevice(virDev);
+                bindDevice(deviceId, true);
 
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else if (resultText.startsWith("http://") || resultText.startsWith("https://")) {
             Intent intent = new Intent();
             intent.setAction("android.intent.action.VIEW");
@@ -235,6 +257,43 @@ public class QRCaptureActivity extends BaseActivity implements Callback {
         } else {
             showToast(R.string.qr_scan_err);
         }
+    }
+
+
+    private void bindDevice(final String deviceId, final boolean isVirDev) {
+        IntoYunSdk.bindDevice(deviceId, new IntoYunListener() {
+            @Override
+            public void onSuccess(Object result) {
+                Logger.i(new Gson().toJson(result));
+                if (isVirDev) {
+                    notifyVirtual();
+                } else {
+                    QRCaptureActivity.this.finish();
+                }
+                UpdateDevice updateDevice = new UpdateDevice();
+                EventBus.getDefault().post(updateDevice);
+            }
+
+            @Override
+            public void onFail(NetError error) {
+                showToast(error.getMessage());
+            }
+        });
+    }
+
+
+    public void notifyVirtual(){
+        IntoYunSdk.notifyOpenVirtualDevice(deviceId, productId, new PublishListener() {
+            @Override
+            public void onSuccess(String topic) {
+                QRCaptureActivity.this.finish();
+            }
+
+            @Override
+            public void onFailed(String topic, String errMsg) {
+                showToast(errMsg);
+            }
+        });
     }
 
     private void initBeepSound() {

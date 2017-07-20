@@ -49,8 +49,9 @@
             style="@style/input_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:digits="0123456789abcdefABCDEF"
             android:background="@drawable/input_round_background"
-            android:hint="@string/input_hint"
+            android:hint="@string/input_hex_hint"
             android:padding="10dp"/>
     </RelativeLayout>
 </RelativeLayout>

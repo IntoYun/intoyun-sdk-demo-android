@@ -238,11 +238,13 @@ public class Utils {
     }
 
 
+    //将数值型数据装换成服务器的整形数据
     public static int parseInt(String data, DataPointBean dataPointBean){
         float fData = Float.valueOf(data);
         return (int) ((fData - dataPointBean.getMin()) * Math.pow(10, dataPointBean.getResolution()));
     }
 
+    //将服务器的整形数据装换回数值类型数据
     public static float parseFloat(float data, DataPointBean dataPointBean){
         return (float) (data/Math.pow(10, dataPointBean.getResolution())) + dataPointBean.getMin();
     }

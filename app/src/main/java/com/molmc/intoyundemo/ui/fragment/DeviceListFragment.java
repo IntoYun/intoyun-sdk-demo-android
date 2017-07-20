@@ -19,6 +19,7 @@ import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.molmc.intoyundemo.R;
 import com.molmc.intoyundemo.support.adapter.DeviceAdapter;
 import com.molmc.intoyundemo.support.db.DeviceDataBase;
+import com.molmc.intoyundemo.support.db.VirtaulDeviceDataBase;
 import com.molmc.intoyundemo.support.eventbus.UpdateDevice;
 import com.molmc.intoyundemo.ui.activity.LoginActivity;
 import com.molmc.intoyundemo.ui.activity.QRCaptureActivity;
@@ -33,6 +34,7 @@ import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyunsdk.utils.IntoUtil;
 import com.orhanobut.logger.Logger;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,6 +71,7 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
         setHasOptionsMenu(true);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -155,9 +158,15 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
             for (String deviceId : deviceStatus.keySet()) {
                 result = setDeviceStatus(deviceId, deviceStatus.get(deviceId), result);
             }
-            devices = result;
-            deviceAdapter.changeData(result);
-            DeviceDataBase.getInstance(getActivity()).saveDevices(devices);
+            List<DeviceBean> virDevices = VirtaulDeviceDataBase.getInstance(getActivity()).getDevices();
+            if (virDevices!=null && virDevices.size()>0){
+                devices = virDevices;
+                devices.addAll(result);
+            } else {
+                devices = result;
+            }
+            deviceAdapter.changeData(devices);
+            DeviceDataBase.getInstance(getActivity()).saveDevices(result);
             subDeviceStatus();
         } else {
             finishRefresh();
@@ -198,9 +207,7 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
 
     @Subscribe
     public void onEventMainThread(UpdateDevice event) {
-        if (event.getDeviceBean() != null) {
             onRefresh();
-        }
     }
 
 
@@ -258,6 +265,7 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
 
     @Override
     public void onDestroy() {
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 }

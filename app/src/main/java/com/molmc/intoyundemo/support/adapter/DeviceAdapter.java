@@ -13,6 +13,7 @@ import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
 import com.marshalchen.ultimaterecyclerview.quickAdapter.easyRegularAdapter;
 import com.molmc.intoyundemo.R;
 import com.molmc.intoyundemo.support.db.DataPointDataBase;
+import com.molmc.intoyundemo.support.db.VirtaulDeviceDataBase;
 import com.molmc.intoyundemo.ui.fragment.DeviceFragment;
 import com.molmc.intoyundemo.ui.fragment.DeviceInfoFragment;
 import com.molmc.intoyundemo.ui.fragment.SmartLightFragment;
@@ -147,7 +148,11 @@ public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.
                         switch (which) {
                             //查看设备信息
                             case 0: {
-                                DeviceInfoFragment.launch((Activity) mContext, device);
+                                if (device.getDeviceId().startsWith("0abcdef")){
+                                    DialogUtil.showToast(R.string.err_vir_dev);
+                                } else {
+                                    DeviceInfoFragment.launch((Activity) mContext, device);
+                                }
                                 break;
                             }
                             //删除设备
@@ -155,6 +160,9 @@ public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.
                                 IntoYunSdk.deleteDeviceById(device.getDeviceId(), new IntoYunListener() {
                                     @Override
                                     public void onSuccess(Object result) {
+                                        if (device.getDeviceId().startsWith("0abcdef")){
+                                            VirtaulDeviceDataBase.getInstance(mContext).deleteDeviceById(device.getDeviceId());
+                                        }
                                         source.remove(position);
                                         notifyDataSetChanged();
                                     }

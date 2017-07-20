@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.molmc.intoyundemo.R;
 import com.molmc.intoyundemo.support.eventbus.DataPointEvent;
 import com.molmc.intoyundemo.utils.Constant;
+import com.molmc.intoyundemo.utils.DialogUtil;
 import com.molmc.intoyundemo.utils.Utils;
 import com.molmc.intoyunsdk.bean.DataPointBean;
 
@@ -21,6 +22,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * features:
@@ -51,7 +53,7 @@ public class WidgetExtra extends LinearLayout implements View.OnClickListener {
 		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 		params.setMargins(2, Utils.dip2px(5), 2, Utils.dip2px(5));
 		params.gravity = Gravity.CENTER;
-		ViewGroup view = (ViewGroup) View.inflate(context, R.layout.datapoint_string, null);
+		ViewGroup view = (ViewGroup) View.inflate(context, R.layout.datapoint_extra, null);
 		tvTitle = (TextView) view.findViewById(R.id.txtTitle);
 		etContent = (EditText) view.findViewById(R.id.etContent);
 		btnSend = (TextView) view.findViewById(R.id.btnSend);
@@ -73,9 +75,11 @@ public class WidgetExtra extends LinearLayout implements View.OnClickListener {
 		if (dataPoint.getDirection() == Constant.TRANSFROM_DATA) {
 			tvValue.setVisibility(VISIBLE);
 			etContent.setVisibility(GONE);
+			btnSend.setVisibility(GONE);
 		} else {
 			tvValue.setVisibility(GONE);
 			etContent.setVisibility(VISIBLE);
+			btnSend.setVisibility(VISIBLE);
 		}
 	}
 
@@ -101,8 +105,14 @@ public class WidgetExtra extends LinearLayout implements View.OnClickListener {
 			Toast.makeText(getContext(), R.string.err_empty, Toast.LENGTH_SHORT).show();
 			return;
 		}
-		Utils.hiderSoftInput(etContent, getContext());
-		this.mListener.onChanged(content, dataPoint);
+		Pattern p = Pattern.compile("^[0-9a-fA-F]+");
+		if (content.length()%2==0 && p.matcher(content).matches()){
+			Utils.hiderSoftInput(etContent, getContext());
+			this.mListener.onChanged(content, dataPoint);
+		} else {
+			DialogUtil.showToast(R.string.err_input_hex);
+		}
+
 	}
 
 	@Override
