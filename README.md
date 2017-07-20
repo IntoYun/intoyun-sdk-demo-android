@@ -87,7 +87,7 @@ IntoYunSharedPrefs.getAppToken(context);
 
 ## App调试：
 
-登录IntoYun平台，进入**产品管理 -> App开发**如下图所示，打开App二维码扫描功能，即可启动虚拟设备进行app数据点调试。
+登录[IntoYun平台](https://www.intoyun.com)，进入**产品管理 -> App开发**如下图所示，打开App二维码扫描功能，即可启动虚拟设备进行app数据点调试。
 
 ![](./image/virtual_scan.png)
 
