@@ -1,9 +1,14 @@
 package com.molmc.intoyundemo.ui.fragment;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +36,7 @@ import com.molmc.intoyunsdk.bean.DeviceBean;
 import com.molmc.intoyunsdk.mqtt.PublishListener;
 import com.molmc.intoyunsdk.mqtt.ReceiveListener;
 import com.molmc.intoyunsdk.network.NetError;
+import com.molmc.intoyunsdk.openapi.DataProtocol;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.orhanobut.logger.Logger;
 
@@ -47,6 +53,10 @@ import static com.molmc.intoyundemo.utils.Constant.ENUM_DT;
 import static com.molmc.intoyundemo.utils.Constant.EXTRA_DT;
 import static com.molmc.intoyundemo.utils.Constant.NUMBER_DT;
 import static com.molmc.intoyundemo.utils.Constant.STRING_DT;
+import static com.molmc.intoyunsdk.openapi.Constant.TCP_WS_RECEIVE_META_ACTION;
+import static com.molmc.intoyunsdk.openapi.Constant.TCP_WS_RECEIVE_SMS_ACTION;
+import static com.molmc.intoyunsdk.tcpws.TcpwsProtocol.SEND_META;
+import static com.molmc.intoyunsdk.tcpws.TcpwsProtocol.SEND_SMS;
 
 /**
  * features: 设备展示界面
@@ -69,6 +79,7 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
 
     private DeviceBean deviceBean;
     private List<DataPointBean> dataPoints;
+    private LocalBroadcastReceiver mLocalBroadcastReceiver;
 
     @Nullable
     @Override
@@ -91,6 +102,13 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
         setDeviceWidget();
         IntoYunSdk.subscribeDataFromDevice(deviceBean, dataPoints, this);
         mScrollView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        //实例化广播接收机
+        mLocalBroadcastReceiver = new LocalBroadcastReceiver();
+        //设置设置意图过滤
+        IntentFilter intentFilter = new IntentFilter(TCP_WS_RECEIVE_SMS_ACTION);
+        intentFilter.addAction(TCP_WS_RECEIVE_META_ACTION);
+        //注册广播接收
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mLocalBroadcastReceiver, intentFilter);
     }
 
     private void setDeviceWidget() {
@@ -142,6 +160,7 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
     public void onDestroy() {
         super.onDestroy();
         IntoYunSdk.unSubscribeDataFromDevice(deviceBean);
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mLocalBroadcastReceiver);
     }
 
     @Override
@@ -199,6 +218,38 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
             //大小小于100时，为不显示虚拟键盘或虚拟键盘隐藏
         }
     }
+
+
+    class LocalBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int type = intent.getIntExtra("type", -1);
+            String deviceId = intent.getStringExtra("deviceId");
+            if (type == SEND_SMS) {
+                byte[] msg = intent.getByteArrayExtra("msg");
+                Logger.i("type: " + type + "\ndeviceId: " + deviceId + "\nmsg: " + new String(msg));
+
+                //tlv数据解码成json格式数据
+                String result = new String(DataProtocol.decode(msg, dataPoints));
+
+                Logger.i(result);
+                //json数据转object
+                Map<Integer, Object> map = new Gson().fromJson(result, new TypeToken<Map<Integer, Object>>() {
+                }.getType());
+                DataPointEvent dataPointEvent = new DataPointEvent();
+                dataPointEvent.setPayload(map);
+                //更新界面数据
+                EventBus.getDefault().post(dataPointEvent);
+
+
+            } else if (type == SEND_META) {
+                String msg = intent.getStringExtra("msg");
+                Logger.i("type: " + type + "\ndeviceId: " + deviceId + "\nmsg: " + msg);
+            }
+        }
+    }
+
 
 
 }

@@ -112,7 +112,7 @@ public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.
         holder.itemDevice.setOnClickListener(onClickListener(holder, dev));
         holder.itemView.setOnLongClickListener(onLongClickListener(position, dev));
         holder.itemView.setBackgroundColor(mContext.getResources().getColor(colors[position % colors.length]));
-        if (dev.getStatus()) {
+        if (dev.isOnline()) {
             holder.onlineStatus.setText(mContext.getString(R.string.device_online_status));
         } else {
             holder.onlineStatus.setText(mContext.getString(R.string.device_offline_status));

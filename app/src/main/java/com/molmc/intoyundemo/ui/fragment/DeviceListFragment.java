@@ -1,12 +1,16 @@
 package com.molmc.intoyundemo.ui.fragment;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,6 +50,8 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 
+import static com.molmc.intoyunsdk.openapi.Constant.TCP_WS_RECEIVE_META_ACTION;
+
 /**
  * features: 设备列表
  * Author：  hhe on 16-7-30 10:10
@@ -66,6 +72,7 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
     private DeviceAdapter deviceAdapter;
     private List<DeviceBean> devices = new ArrayList<>();
     private Map<String, Boolean> deviceStatus = new HashMap<>();
+    private LocalBroadcastReceiver mLocalBroadcastReceiver;
 
 
     @Nullable
@@ -73,6 +80,11 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
         setHasOptionsMenu(true);
+        //实例化广播接收机
+        mLocalBroadcastReceiver = new LocalBroadcastReceiver();
+        //设置意图过滤并注册广播接收
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mLocalBroadcastReceiver, new IntentFilter(TCP_WS_RECEIVE_META_ACTION));
+
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -231,7 +243,7 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
         if (!IntoUtil.Empty.check(devices)) {
             for (int i = 0, size = devices.size(); i < size; i++) {
                 if (devices.get(i).getDeviceId().equals(deviceId)) {
-                    devices.get(i).setStatus(status);
+                    devices.get(i).setOnline(status);
                     break;
                 }
             }
@@ -267,5 +279,26 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mLocalBroadcastReceiver);
+    }
+
+
+    class LocalBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int type = intent.getIntExtra("type", -1);
+            String deviceId = intent.getStringExtra("deviceId");
+            String msg = intent.getStringExtra("msg");
+            Logger.i("type: " + type +"\ndeviceId: " + deviceId + "\nmsg: " + msg);
+            try {
+                boolean status = new JSONObject(msg).getBoolean("online");
+                deviceStatus.put(deviceId, status);
+                devices = setDeviceStatus(deviceId, status, devices);
+                deviceAdapter.changeData(devices);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -12,7 +12,7 @@
 
 ```
 dependencies {
-	compile 'com.molmc.intoyun:intoyunsdk:1.1.2'
+	compile 'com.molmc.intoyun:intoyunsdk:1.2.0'
 }
 ```
 
@@ -42,7 +42,14 @@ public class IntoYunApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		instance = this;
-		//初始化SDK
+		/** 初始化SDK
+		 * 设置设置mqtt and websocket协议
+		 * 如果只使用intoyun的mqtt通讯协议，则设置protoType: PROTO_MQTT（默认）
+		 * 如果只使用intoyun的tcp协议，则设置protoType: PROTO_TCP
+		 * 如果只使用intoyun的websocket协议，则设置protoType: PROTO_WS
+		 * 如果使用了intoyun的mqtt和tcp两种协议，则设置protoType: PROTO_MQTT_TCP
+		 * 如果使用了intoyun的mqtt和websocket两种协议，则设置protoType: PROTO_MQTT_WS
+		 */
 		IntoYunSdk.init(getApplicationContext(), appId, appSecret);
 		//打印调试信息
 		IntoYunSdk.openLog(true);
@@ -62,10 +69,9 @@ IntoYun SDK初始化的时候默认会从服务器上获取一次App Token，App
 用户也可以通过下面接口手动刷新App Token，示例代码如下。
 
 ```
-IntoYunSdk.getAppToken(new IntoYunListener<AppTokenResult>() {
+IntoYunSdk.getAppToken(new IntoYunListener() {
 	@Override
-	public void onSuccess(AppTokenResult result) {
-		//result 为token数据
+	public void onSuccess(Object result) {
 	}
 
 	@Override
@@ -93,6 +99,9 @@ IntoYunSharedPrefs.getAppToken(context);
 
 
 # 更新记录
+
+### 2017-8-30   v1.2.0 
+- 1、增加对[TCP/Websocket协议](http://docs.intoyun.com/yunapi/tcp/)的支持
 
 ### 2017-7-27   v1.1.2 
 - 1、修复配置设备后，设备在线下载程序的bug
