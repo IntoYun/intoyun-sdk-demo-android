@@ -24,7 +24,7 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
         UserResult result = IntoYunSharedPrefs.getUserInfo(this);
         if (result != null && !TextUtils.isEmpty(result.getUid())){
-            IntoYunSdk.createConnection(result.getToken(), result.getUid());
+            IntoYunSdk.createConnection(result.getUid(), result.getToken());
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {

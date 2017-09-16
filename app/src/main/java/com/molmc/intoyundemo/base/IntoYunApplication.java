@@ -23,13 +23,13 @@ public class IntoYunApplication extends Application {
 		instance = this;
 		/** 初始化SDK
 		 * 设置设置mqtt and websocket协议
-		 * 如果只使用intoyun的mqtt通讯协议，则设置protoType: PROTO_MQTT（默认）
-		 * 如果只使用intoyun的tcp协议，则设置protoType: PROTO_TCP
-		 * 如果只使用intoyun的websocket协议，则设置protoType: PROTO_WS
-		 * 如果使用了intoyun的mqtt和tcp两种协议，则设置protoType: PROTO_MQTT_TCP
-		 * 如果使用了intoyun的mqtt和websocket两种协议，则设置protoType: PROTO_MQTT_WS
+		 * 如果只使用intoyun的mqtt通讯协议，则设置protocol: IntoYunSdk.Protocol.mqtt（默认）
+		 * 如果只使用intoyun的tcp协议，则设置protocol: IntoYunSdk.Protocol.tcp
+		 * 如果只使用intoyun的websocket协议，则设置protocol: IntoYunSdk.Protocol.ws
+		 * 如果使用了intoyun的mqtt和tcp两种协议，则设置protocol: IntoYunSdk.Protocol.mqtt_tcp
+		 * 如果使用了intoyun的mqtt和websocket两种协议，则设置protocol: IntoYunSdk.Protocol.mqtt_ws
 		 */
-		IntoYunSdk.init(getApplicationContext(), appkey, appSecret, IntoYunSdk.Protocol.mqtt_ws);
+		IntoYunSdk.init(getApplicationContext(), appkey, appSecret, IntoYunSdk.Protocol.mqtt);
 		//打印调试信息
 		IntoYunSdk.openLog(true);
 
