@@ -12,7 +12,7 @@
 
 ```
 dependencies {
-	compile 'com.molmc.intoyun:intoyunsdk:1.2.1'
+	compile 'com.molmc.intoyun:intoyunsdk:1.2.3'
 }
 ```
 
@@ -99,6 +99,9 @@ IntoYunSharedPrefs.getAppToken(context);
 
 
 # 更新记录
+
+### 2017-9-22   v1.2.3 
+- 1、修复EDTP发送指令API接口
 
 ### 2017-9-15   v1.2.1 
 - 1、增强数据传输的安全性
