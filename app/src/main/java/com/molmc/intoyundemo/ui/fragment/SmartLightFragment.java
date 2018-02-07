@@ -28,7 +28,6 @@ import com.molmc.intoyundemo.bean.FragmentArgs;
 import com.molmc.intoyundemo.support.db.DataPointDataBase;
 import com.molmc.intoyundemo.ui.activity.BaseActivity;
 import com.molmc.intoyundemo.ui.activity.FragmentCommonActivity;
-import com.molmc.intoyundemo.utils.AppSharedPref;
 import com.molmc.intoyunsdk.bean.DataPointBean;
 import com.molmc.intoyunsdk.bean.DeviceBean;
 import com.molmc.intoyunsdk.mqtt.PublishListener;
@@ -106,7 +105,6 @@ public class SmartLightFragment extends BaseFragment implements ReceiveListener,
         lightSwitch = false;
         showModeGrid = false;
         colorValue = 0xffffffff;
-        deviceBean.setAccessMode(AppSharedPref.getInstance(getActivity()).getBoarInfo(deviceBean.getBoard()).getAccessMode());
         BaseActivity baseActivity = (BaseActivity) getActivity();
         baseActivity.getSupportActionBar().setTitle(deviceBean.getName());
         setHasOptionsMenu(false);

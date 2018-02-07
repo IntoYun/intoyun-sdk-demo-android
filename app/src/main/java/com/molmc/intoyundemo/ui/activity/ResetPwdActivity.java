@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
+import com.molmc.intoyunsdk.network.model.BaseModel;
 import com.molmc.intoyunsdk.openapi.Constant;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyunsdk.utils.IntoUtil;
@@ -101,15 +102,30 @@ public class ResetPwdActivity extends BaseActivity {
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 	}
 
-	/**
-	 * 获取验证码
-	 */
-	private void getVerifyCode() {
+	// 检查账号是否已注册
+	private void checkAccountRegistered(){
 		account = editAccount.getText().toString().trim();
 		if (TextUtils.isEmpty(account)) {
 			showToast(R.string.err_account_empty);
 			return;
 		}
+		IntoYunSdk.checkAccountRegistered(account, IntoYunSdk.AccountType.PHONE, new IntoYunListener<BaseModel>() {
+			@Override
+			public void onSuccess(BaseModel result) {
+				showToast(R.string.err_account_unregistered);
+			}
+
+			@Override
+			public void onFail(NetError error) {
+				getVerifyCode();
+			}
+		});
+	}
+	/**
+	 * 获取验证码
+	 */
+	private void getVerifyCode() {
+
 		UserBeanReq userBean = new UserBeanReq();if (IntoUtil.isEmail(account)) {
 			userBean.setEmail(account);
 			userBean.setType(Constant.HTTP_REQUEST_VLDCODE_EMAIL);
@@ -181,7 +197,8 @@ public class ResetPwdActivity extends BaseActivity {
 	public void onClick(View view) {
 		switch (view.getId()) {
 			case R.id.btnVldCode:
-				getVerifyCode();
+//				getVerifyCode();
+				checkAccountRegistered();
 				break;
 			case R.id.btnResetPwd:
 				resetPwd();

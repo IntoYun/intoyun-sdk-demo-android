@@ -71,6 +71,8 @@ public class MineFragment extends BaseFragment {
 
     private void initView() {
         setHasOptionsMenu(false);
+        UserResult userInfo = IntoYunSharedPrefs.getUserInfo(getActivity());
+        userName.setText(userInfo.getNickname());
         getUserInfo();
 //        UserResult userInfo = IntoYunSharedPrefs.getUserInfo(getActivity());
 //        userName.setText(userInfo.getUsername());
@@ -181,9 +183,9 @@ public class MineFragment extends BaseFragment {
             @Override
             public void onSuccess(UserResult result) {
                 Logger.i(new Gson().toJson(result));
-                userName.setText(result.getNickname());
+                userName.setText(TextUtils.isEmpty(result.getNickname())? result.getUsername() : result.getNickname());
                 Glide.with(MineFragment.this).load(Constant.INTOYUN_HTTP_HOST + result.getImgSrc()).placeholder(R.mipmap.ic_default_1).fitCenter().bitmapTransform(new RoundedCornersTransformation(getActivity(), Utils.dip2px(40), 0)).into(userHead);
-                ;
+
             }
 
             @Override
@@ -207,7 +209,7 @@ public class MineFragment extends BaseFragment {
      *
      * @param nickname
      */
-    private void changeUserInfo(String nickname) {
+    private void changeUserInfo(final String nickname) {
         if (TextUtils.isEmpty(nickname)) {
             DialogUtil.showToast(R.string.err_nickname_empty);
             return;
@@ -216,6 +218,7 @@ public class MineFragment extends BaseFragment {
             @Override
             public void onSuccess(Object result) {
                 showToast(R.string.suc_change);
+                userName.setText(nickname);
             }
 
             @Override
@@ -229,16 +232,21 @@ public class MineFragment extends BaseFragment {
         IntoYunSdk.userLogout(new IntoYunListener() {
             @Override
             public void onSuccess(Object result) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+                gotoLogin();
             }
 
             @Override
             public void onFail(NetError error) {
                 showToast(error.getMessage());
+                gotoLogin();
             }
         });
+    }
+
+    private void gotoLogin(){
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();
     }
 
 }

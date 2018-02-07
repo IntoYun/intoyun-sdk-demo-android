@@ -12,7 +12,7 @@
 
 ```
 dependencies {
-	compile 'com.molmc.intoyun:intoyunsdk:1.2.3'
+	compile 'com.molmc.intoyun:intoyunsdk:1.2.4'
 }
 ```
 
@@ -99,6 +99,11 @@ IntoYunSharedPrefs.getAppToken(context);
 
 
 # 更新记录
+
+### 2018-2-07   v1.2.4 
+- 1、增加检查账号是否已注册API接口
+- 2、修改了设备历史数据的model字段，将timestamp字段改为ts，value字段改为val
+- 3、修复了demo显示用户头像和昵称bug
 
 ### 2017-9-22   v1.2.3 
 - 1、修复EDTP发送指令API接口

@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
+import com.molmc.intoyunsdk.network.model.BaseModel;
 import com.molmc.intoyunsdk.network.model.response.UserResult;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyundemo.R;
@@ -105,7 +106,8 @@ public class RegisterActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnVldCode:
-                getVerifyCode();
+                checkAccountRegistered();
+//                getVerifyCode();
                 break;
             case R.id.btnRegister:
                 register();
@@ -113,15 +115,30 @@ public class RegisterActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 获取验证码
-     */
-    private void getVerifyCode() {
+    // 检查账号是否已注册
+    private void checkAccountRegistered(){
         account = editAccount.getText().toString().trim();
         if (TextUtils.isEmpty(account)) {
             showToast(R.string.err_account_empty);
             return;
         }
+        IntoYunSdk.checkAccountRegistered(account, IntoYunSdk.AccountType.PHONE, new IntoYunListener<BaseModel>() {
+            @Override
+            public void onSuccess(BaseModel result) {
+                getVerifyCode();
+            }
+
+            @Override
+            public void onFail(NetError error) {
+                showToast(error.getMessage());
+            }
+        });
+    }
+
+    /**
+     * 获取验证码
+     */
+    private void getVerifyCode() {
         IntoYunSdk.getVerifyCode(account, new IntoYunListener() {
 
             @Override

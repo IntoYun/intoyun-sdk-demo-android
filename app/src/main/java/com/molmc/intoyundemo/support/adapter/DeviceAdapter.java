@@ -3,6 +3,7 @@ package com.molmc.intoyundemo.support.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -106,7 +107,11 @@ public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.
 
     private void initView(DeviceBean dev, DeviceNode holder, int position) {
         holder.txtName.setText(dev.getName());
-        holder.txtAccessMode.setText(IntoYunSdk.boardToName(dev.getBoard()));
+        if (TextUtils.isEmpty(dev.getBoard())){
+            holder.txtAccessMode.setText(R.string.unknown);
+        }else{
+            holder.txtAccessMode.setText(IntoYunSdk.boardToName(dev.getBoard()));
+        }
         Glide.with(mContext).load(com.molmc.intoyunsdk.openapi.Constant.INTOYUN_HTTP_HOST + dev.getImgSrc()).placeholder(defaultDrawables[position % defaultDrawables.length])
                 .bitmapTransform(new RoundedCornersTransformation(mContext, Utils.dip2px(40), 0)).into(holder.imgPhoto);
         holder.itemDevice.setOnClickListener(onClickListener(holder, dev));
