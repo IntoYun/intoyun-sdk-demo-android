@@ -12,7 +12,7 @@
 
 ```
 dependencies {
-	compile 'com.molmc.intoyun:intoyunsdk:1.2.4'
+	compile 'com.molmc.intoyun:intoyunsdk:1.3.0'
 }
 ```
 
