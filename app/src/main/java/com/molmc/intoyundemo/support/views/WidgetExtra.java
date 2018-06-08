@@ -24,6 +24,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static com.molmc.intoyundemo.utils.Constant.DF_TLV;
+
 /**
  * features:
  * Author：  hhe on 16-8-5 23:34
@@ -108,7 +110,7 @@ public class WidgetExtra extends LinearLayout implements View.OnClickListener {
 		Pattern p = Pattern.compile("^[0-9a-fA-F]+");
 		if (content.length()%2==0 && p.matcher(content).matches()){
 			Utils.hiderSoftInput(etContent, getContext());
-			this.mListener.onChanged(content, dataPoint);
+			this.mListener.onChanged(content, dataPoint, DF_TLV);
 		} else {
 			DialogUtil.showToast(R.string.err_input_hex);
 		}

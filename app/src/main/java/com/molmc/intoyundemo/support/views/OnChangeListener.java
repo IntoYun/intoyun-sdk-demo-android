@@ -8,5 +8,5 @@ import com.molmc.intoyunsdk.bean.DataPointBean;
 
 public interface OnChangeListener {
 
-    void onChanged(Object payload, DataPointBean dataPoint);
+    void onChanged(Object payload, DataPointBean dataPoint, String dataFormat);
 }

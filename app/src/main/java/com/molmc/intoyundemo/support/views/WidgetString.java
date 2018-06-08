@@ -22,6 +22,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Map;
 
+import static com.molmc.intoyundemo.utils.Constant.DF_TLV;
+
 /**
  * features:
  * Author：  hhe on 16-8-5 23:34
@@ -105,7 +107,7 @@ public class WidgetString extends LinearLayout implements View.OnClickListener {
 			return;
 		}
 		Utils.hiderSoftInput(etContent, getContext());
-		this.mListener.onChanged(content, dataPoint);
+		this.mListener.onChanged(content, dataPoint, DF_TLV);
 	}
 
 	@Override

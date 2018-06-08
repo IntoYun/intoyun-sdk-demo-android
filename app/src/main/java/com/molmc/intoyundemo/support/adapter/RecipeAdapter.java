@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
 import com.marshalchen.ultimaterecyclerview.quickAdapter.easyRegularAdapter;
 import com.molmc.intoyundemo.R;
@@ -33,6 +34,8 @@ import java.util.TimerTask;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 /**
  * Created by hehui on 17/3/23.
@@ -89,12 +92,21 @@ public class RecipeAdapter extends easyRegularAdapter<RecipeBean, RecipeAdapter.
         DeviceBean triggerDevice = DeviceDataBase.getInstance(mContext).getDeviceById(recipe.getDevices().get(0));
         DeviceBean actionDevice = DeviceDataBase.getInstance(mContext).getDeviceById(recipe.getDevices().get(1));
 
+        RequestOptions opts = new RequestOptions();
+        opts.placeholder(defaultDrawables[position % defaultDrawables.length]);
+        opts.fitCenter();
         if (triggerDevice != null)
-            Glide.with(mContext).load(Constant.INTOYUN_HTTP_HOST + triggerDevice.getImgSrc()).fitCenter().placeholder(defaultDrawables[position % defaultDrawables.length])
-                    .bitmapTransform(new RoundedCornersTransformation(mContext, Utils.dip2px(40), 0)).into(holder.imgPhoto);
+            Glide.with(mContext)
+                    .load(Constant.getHttpHost() + triggerDevice.getImgSrc())
+                    .apply(opts)
+                    .apply(bitmapTransform(new RoundedCornersTransformation(Utils.dip2px(40), 0)))
+                    .into(holder.imgPhoto);
         if (actionDevice != null)
-            Glide.with(mContext).load(Constant.INTOYUN_HTTP_HOST + actionDevice.getImgSrc()).fitCenter().placeholder(defaultDrawables[position % defaultDrawables.length])
-                    .bitmapTransform(new RoundedCornersTransformation(mContext, Utils.dip2px(20), 0)).into(holder.imgActionPhoto);
+            Glide.with(mContext)
+                    .load(Constant.getHttpHost() + actionDevice.getImgSrc())
+                    .apply(opts)
+                    .apply(bitmapTransform(new RoundedCornersTransformation(Utils.dip2px(20), 0)))
+                    .into(holder.imgActionPhoto);
     }
 
 

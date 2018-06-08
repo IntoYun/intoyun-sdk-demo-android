@@ -84,7 +84,6 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
         mLocalBroadcastReceiver = new LocalBroadcastReceiver();
         //设置意图过滤并注册广播接收
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mLocalBroadcastReceiver, new IntentFilter(TCP_WS_RECEIVE_META_ACTION));
-
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -166,23 +165,27 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
 
     @Override
     public void onSuccess(List<DeviceBean> result) {
-        if (!IntoUtil.Empty.check(deviceStatus.keySet()) && !IntoUtil.Empty.check(result)) {
+        List<DeviceBean> virDevices = VirtaulDeviceDataBase.getInstance(getActivity()).getDevices();
+        if (!IntoUtil.Empty.check(deviceStatus.keySet())) {
             for (String deviceId : deviceStatus.keySet()) {
                 result = setDeviceStatus(deviceId, deviceStatus.get(deviceId), result);
             }
-            List<DeviceBean> virDevices = VirtaulDeviceDataBase.getInstance(getActivity()).getDevices();
-            if (virDevices!=null && virDevices.size()>0){
-                devices = virDevices;
-                devices.addAll(result);
-            } else {
-                devices = result;
-            }
-            deviceAdapter.changeData(devices);
-            DeviceDataBase.getInstance(getActivity()).saveDevices(result);
-            subDeviceStatus();
-        } else {
-            finishRefresh();
         }
+        if (virDevices != null) {
+            devices = virDevices;
+        }
+
+        if (!IntoUtil.Empty.check(result)) {
+            devices.addAll(result);
+        }
+        deviceAdapter.changeData(devices);
+
+        if (devices.size() <= 0)
+            ultimateRecyclerView.showEmptyView();
+
+        DeviceDataBase.getInstance(getActivity()).saveDevices(result);
+        subDeviceStatus();
+        finishRefresh();
     }
 
 
@@ -219,7 +222,7 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
 
     @Subscribe
     public void onEventMainThread(UpdateDevice event) {
-            onRefresh();
+        onRefresh();
     }
 
 
@@ -282,7 +285,6 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mLocalBroadcastReceiver);
     }
 
-
     class LocalBroadcastReceiver extends BroadcastReceiver {
 
         @Override
@@ -290,7 +292,7 @@ public class DeviceListFragment extends BaseRefreshFragment implements IntoYunLi
             int type = intent.getIntExtra("type", -1);
             String deviceId = intent.getStringExtra("deviceId");
             String msg = intent.getStringExtra("msg");
-            Logger.i("type: " + type +"\ndeviceId: " + deviceId + "\nmsg: " + msg);
+            Logger.i("type: " + type + "\ndeviceId: " + deviceId + "\nmsg: " + msg);
             try {
                 boolean status = new JSONObject(msg).getBoolean("online");
                 deviceStatus.put(deviceId, status);

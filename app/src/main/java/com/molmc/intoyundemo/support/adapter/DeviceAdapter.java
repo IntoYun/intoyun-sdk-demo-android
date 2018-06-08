@@ -10,10 +10,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
 import com.marshalchen.ultimaterecyclerview.quickAdapter.easyRegularAdapter;
 import com.molmc.intoyundemo.R;
-import com.molmc.intoyundemo.support.db.DataPointDataBase;
 import com.molmc.intoyundemo.support.db.VirtaulDeviceDataBase;
 import com.molmc.intoyundemo.ui.fragment.DeviceFragment;
 import com.molmc.intoyundemo.ui.fragment.DeviceInfoFragment;
@@ -22,12 +22,10 @@ import com.molmc.intoyundemo.utils.AppSharedPref;
 import com.molmc.intoyundemo.utils.DialogUtil;
 import com.molmc.intoyundemo.utils.Utils;
 import com.molmc.intoyunsdk.bean.BoardInfoBean;
-import com.molmc.intoyunsdk.bean.DataPointBean;
 import com.molmc.intoyunsdk.bean.DeviceBean;
 import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
-import com.molmc.intoyunsdk.utils.IntoUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +33,8 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 /**
  * features: 设备列表适配器
@@ -112,8 +112,17 @@ public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.
         }else{
             holder.txtAccessMode.setText(IntoYunSdk.boardToName(dev.getBoard()));
         }
-        Glide.with(mContext).load(com.molmc.intoyunsdk.openapi.Constant.INTOYUN_HTTP_HOST + dev.getImgSrc()).placeholder(defaultDrawables[position % defaultDrawables.length])
-                .bitmapTransform(new RoundedCornersTransformation(mContext, Utils.dip2px(40), 0)).into(holder.imgPhoto);
+
+        RequestOptions opts = new RequestOptions();
+        opts.placeholder(defaultDrawables[position % colors.length]);
+        opts.fitCenter();
+        Glide.with(mContext)
+                .load(com.molmc.intoyunsdk.openapi.Constant.getHttpHost() + dev.getImgSrc())
+                .apply(opts)
+                .apply(bitmapTransform(new RoundedCornersTransformation(Utils.dip2px(40), 0)))
+                .thumbnail()
+                .into(holder.imgPhoto);
+
         holder.itemDevice.setOnClickListener(onClickListener(holder, dev));
         holder.itemView.setOnLongClickListener(onLongClickListener(position, dev));
         holder.itemView.setBackgroundColor(mContext.getResources().getColor(colors[position % colors.length]));
@@ -128,11 +137,11 @@ public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<DataPointBean> dataPoints = DataPointDataBase.getInstance(mContext).getDataPoints(device.getPidImp());
-                if (IntoUtil.Empty.check(dataPoints)) {
-                    DialogUtil.showToast(R.string.err_data_point_not_found);
-                    return;
-                }
+//                List<DataPointBean> dataPoints = DataPointDataBase.getInstance(mContext).getDataPoints(device.getPidImp());
+//                if (IntoUtil.Empty.check(dataPoints)) {
+//                    DialogUtil.showToast(R.string.err_data_point_not_found);
+//                    return;
+//                }
                 if ("o8KOYgFBkowGnEd5".equals(device.getPidImp())) {
                     SmartLightFragment.launch((Activity) mContext, device);
                 } else {

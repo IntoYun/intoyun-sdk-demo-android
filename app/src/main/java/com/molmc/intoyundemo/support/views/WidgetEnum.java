@@ -23,6 +23,8 @@ import java.util.Map;
 
 import cn.zjy.actionsheet.ActionSheet;
 
+import static com.molmc.intoyundemo.utils.Constant.DF_TLV;
+
 /**
  * features: 开关控件
  * Author：  hhe on 16-8-6 11:03
@@ -106,7 +108,7 @@ public class WidgetEnum extends LinearLayout implements View.OnClickListener {
 					public void onButtonClicked(ActionSheet actionSheet, int index) {
 						if (index<dataPoint.get_enum().size()) {
 							tvValue.setText(String.valueOf(dataPoint.get_enum().get(index)));
-							mListener.onChanged(index, dataPoint);
+							mListener.onChanged(index, dataPoint, DF_TLV);
 						}
 					}
 				}).build();

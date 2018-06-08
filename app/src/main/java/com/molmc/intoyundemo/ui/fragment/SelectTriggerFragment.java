@@ -146,7 +146,7 @@ public class SelectTriggerFragment extends BaseFragment implements ClickGridItem
             createRecipe.setTriggerVal(new RecipeBean.TriggerValBean());
         } else {
             String topicMode = "device";
-            if (IntoYunSdk.isLoRaNode(selectDevice.getBoard())){
+            if (IntoYunSdk.isLoRaNode(selectDevice.getType())){
                 topicMode = "lora";
             }
             String from = "v2/" + topicMode + '/' + deviceId + "/rx";
@@ -185,7 +185,7 @@ public class SelectTriggerFragment extends BaseFragment implements ClickGridItem
         List<DeviceBean> devices = DeviceDataBase.getInstance(getActivity()).getDevices();
         List<DeviceBean> deviceFilters = new ArrayList<>();
         for (DeviceBean device : devices) {
-            if (!IntoYunSdk.isGateway(device.getBoard()) && filterDataPoint(device.getPidImp()).size() > 0) {
+            if (!IntoYunSdk.isGateway(device.getType()) && filterDataPoint(device.getPidImp()).size() > 0) {
                 deviceFilters.add(device);
             }
         }

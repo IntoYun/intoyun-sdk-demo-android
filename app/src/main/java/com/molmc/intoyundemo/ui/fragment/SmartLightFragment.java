@@ -162,7 +162,7 @@ public class SmartLightFragment extends BaseFragment implements ReceiveListener,
 
 
     private void sendData(Object payload, DataPointBean dataPoint) {
-        if (deviceBean.getAccessMode().equals("LoRa")) {
+        if (deviceBean.getAccessMode()!=null && deviceBean.getAccessMode().equals("LoRa")) {
             IntoYunSdk.sendCmdToDevice(payload, deviceBean, dataPoint, new IntoYunListener() {
                 @Override
                 public void onSuccess(Object result) {

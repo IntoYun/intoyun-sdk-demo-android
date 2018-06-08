@@ -18,6 +18,10 @@ import java.util.Map;
  * @date 2014-10-9 下午2:36:41
  */
 public class DBOpenHelper extends SQLiteOpenHelper {
+
+
+    public static final int DB_VERSION = 3;
+
     private static Map<String, DBOpenHelper> dbMaps = new HashMap<String, DBOpenHelper>();
     private OnSqliteUpdateListener onSqliteUpdateListener;
     /**

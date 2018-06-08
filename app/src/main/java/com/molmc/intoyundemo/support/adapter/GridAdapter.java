@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.molmc.intoyunsdk.bean.DeviceBean;
 import com.molmc.intoyunsdk.openapi.Constant;
 import com.molmc.intoyundemo.R;
@@ -17,6 +18,8 @@ import com.molmc.intoyundemo.utils.Utils;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 /**
  * Created by hehui on 17/3/27.
@@ -78,8 +81,13 @@ public class GridAdapter extends BaseAdapter {
         viewHolder.getDeviceName().setText(device.getName());
 
         // set image
-        Glide.with(mContext).load(Constant.INTOYUN_HTTP_HOST + device.getImgSrc()).fitCenter().placeholder(defaultDrawables[position % defaultDrawables.length])
-                .bitmapTransform(new RoundedCornersTransformation(mContext, Utils.dip2px(35), 0)).into(viewHolder.getDeviceImage());
+        RequestOptions opts = new RequestOptions();
+        opts.placeholder(defaultDrawables[position % defaultDrawables.length]);
+        opts.fitCenter();
+        Glide.with(mContext).load(Constant.getHttpHost() + device.getImgSrc())
+                .apply(opts)
+                .apply(bitmapTransform(new RoundedCornersTransformation(Utils.dip2px(35), 0)))
+                .into(viewHolder.getDeviceImage());
         return convertView;
     }
 

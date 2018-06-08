@@ -15,6 +15,7 @@ import com.molmc.intoyundemo.utils.AppSharedPref;
 import com.molmc.intoyundemo.utils.DialogUtil;
 import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
+import com.molmc.intoyunsdk.network.model.BaseModel;
 import com.molmc.intoyunsdk.network.model.response.UserResult;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.orhanobut.logger.Logger;
@@ -68,10 +69,9 @@ public class LoginActivity extends BaseActivity {
 	}
 
 	private void requestAppToken() {
-		IntoYunSdk.getAppToken(new IntoYunListener() {
-
+		IntoYunSdk.getAppToken(new IntoYunListener<BaseModel>() {
 			@Override
-			public void onSuccess(Object result) {
+			public void onSuccess(BaseModel result) {
 
 			}
 

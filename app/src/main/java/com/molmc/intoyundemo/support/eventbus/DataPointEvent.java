@@ -12,6 +12,7 @@ public class DataPointEvent {
 
     private Map<Integer, Object> payload;
 
+
     public String getResult() {
         return result;
     }

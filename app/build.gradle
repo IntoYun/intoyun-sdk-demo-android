@@ -4,15 +4,14 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion rootProject.compileVersion
 
     defaultConfig {
         applicationId "com.molmc.intoyundemo"
-        minSdkVersion 16
-        targetSdkVersion 25
-        versionCode 122
-        versionName "1.2.2"
+        minSdkVersion rootProject.minVersion
+        targetSdkVersion rootProject.targetVersion
+        versionCode 130
+        versionName "1.3.0"
     }
 
     signingConfigs {
@@ -42,6 +41,13 @@ android {
         abortOnError false
     }
 
+    compileOptions {
+        encoding "UTF-8"
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
     }
@@ -50,48 +56,61 @@ android {
 
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:design:25.2.0'
-    compile "com.android.support:cardview-v7:25.2.0"
-    compile 'com.molmc.intoyun:intoyunsdk:1.2.4'
-    compile project(':actionsheet')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    compile project(':bubbleseekbar')
+    configurations.all {
+        exclude group: 'com.android.support', module: 'support-v13'
+    }
+
+    implementation "com.android.support:appcompat-v7:${rootProject.supportVersion}"
+    implementation "com.android.support:design:${rootProject.supportVersion}"
+    implementation "com.android.support:cardview-v7:${rootProject.supportVersion}"
+
+
+    implementation "com.molmc.intoyun:intoyunsdk:1.3.0"
+
+    implementation project(':actionsheet')
+    implementation project(':bubbleseekbar')
 
     // 事件总线
-    compile 'org.greenrobot:eventbus:3.0.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
     // 注解框架
-    compile 'com.jakewharton:butterknife:7.0.1'
+    implementation 'com.jakewharton:butterknife:7.0.1'
+    annotationProcessor 'com.jakewharton:butterknife:7.0.1'
+
     //dialog
-    compile 'com.afollestad.material-dialogs:core:0.8.6.2'
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     // zxing
-    compile files('libs/core-3.2.1.jar')
+    implementation files('libs/core-3.2.1.jar')
     // ripple按钮
-    compile 'com.skyfishjy.ripplebackground:library:1.0.1'
+    implementation 'com.skyfishjy.ripplebackground:library:1.0.1'
     // glide 图片显示
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
-    compile 'jp.wasabeef:glide-transformations:2.0.1'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
 
-    compile 'com.github.LuckSiege.PictureSelector:picture_library:v1.2.6'
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.7.1'
 
-    compile 'com.wdullaer:materialdatetimepicker:3.1.3'
+    implementation 'jp.wasabeef:glide-transformations:3.3.0'
+
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
+
+    implementation 'com.wdullaer:materialdatetimepicker:3.1.3'
 
     //bottom navigation
-    compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
+    implementation 'com.ashokvarma.android:bottom-navigation-bar:2.0.4'
 
-    compile 'com.marshalchen.ultimaterecyclerview:library:0.7.0'
+    implementation 'com.marshalchen.ultimaterecyclerview:library:0.7.2'
 
-    compile 'com.github.zcweng:switch-button:0.0.3@aar'
+    implementation 'com.github.zcweng:switch-button:0.0.3@aar'
 
     // https://github.com/skydoves/ColorPickerView
 //    compile 'com.github.skydoves:colorpickerview:1.0.0'
     // https://github.com/QuadFlask/colorpicker
-    compile 'com.github.QuadFlask:colorpicker:0.0.13'
+    implementation 'com.github.QuadFlask:colorpicker:0.0.13'
 
-    debugCompile "com.amitshekhar.android:debug-db:1.0.0"
+    debugImplementation "com.amitshekhar.android:debug-db:1.0.0"
+
+    testImplementation 'junit:junit:4.12'
 
 
 }

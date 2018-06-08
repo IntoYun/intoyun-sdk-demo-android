@@ -12,6 +12,8 @@ import com.orhanobut.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.molmc.intoyundemo.support.db.DBOpenHelper.DB_VERSION;
+
 /**
  * Created by hehui on 17/3/27.
  */
@@ -19,13 +21,13 @@ import java.util.List;
 public class DeviceDataBase {
 
     private static final String DB_NAME = "intoyun_sdk_demo";
-    private static final int DB_VERSION = 1;
     private static final String TABLE_NAME = "device";
     private static DBOpenHelper dbOpenHelper;
 
     private static final String DEVICE_ID = "deviceId";
     private static final String BIND_USER = "bindUser";
     private static final String BOARD = "board";
+    private static final String TYPE = "type";
     private static final String TOKEN = "token";
     private static final String IMAGE_SRC = "imgSrc";
     private static final String NAME = "name";
@@ -60,6 +62,7 @@ public class DeviceDataBase {
                 append(DEVICE_ID).append(" TEXT PRIMARY KEY NOT NULL,").
                 append(BIND_USER).append(" TEXT,").
                 append(BOARD).append(" TEXT,").
+                append(TYPE).append(" TEXT,").
                 append(TOKEN).append(" TEXT,").
                 append(IMAGE_SRC).append(" TEXT,").
                 append(NAME).append(" TEXT,").
@@ -159,6 +162,7 @@ public class DeviceDataBase {
         device.setDeviceId(cursor.getString(cursor.getColumnIndex(DEVICE_ID)));
         device.setBindUser(cursor.getString(cursor.getColumnIndex(BIND_USER)));
         device.setBoard(cursor.getString(cursor.getColumnIndex(BOARD)));
+        device.setType(cursor.getString(cursor.getColumnIndex(TYPE)));
         device.setToken(cursor.getString(cursor.getColumnIndex(TOKEN)));
         device.setImgSrc(cursor.getString(cursor.getColumnIndex(IMAGE_SRC)));
         device.setName(cursor.getString(cursor.getColumnIndex(NAME)));
@@ -176,6 +180,7 @@ public class DeviceDataBase {
         cValue.put(DEVICE_ID, device.getDeviceId());
         cValue.put(BIND_USER, device.getBindUser());
         cValue.put(BOARD, device.getBoard());
+        cValue.put(TYPE, device.getType());
         cValue.put(TOKEN, device.getToken());
         cValue.put(IMAGE_SRC, device.getImgSrc());
         cValue.put(NAME, device.getName());

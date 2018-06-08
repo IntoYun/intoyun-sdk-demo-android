@@ -20,8 +20,13 @@ public class Constant {
     public static final String STRING_DT = "string";
     public static final String EXTRA_DT = "extra";
 
-    public static final String EVENT_SCROLL = "scroll_change";
 
+    // 自定义数据格式
+    public static final String DF_CUSTOM = "custom";
+    // tlv数据点
+    public static final String DF_TLV = "tlv";
+
+    public static final String EVENT_SCROLL = "scroll_change";
 
 
     public static final String SYSTEM_DEVICE_ID = "9999999999999999";

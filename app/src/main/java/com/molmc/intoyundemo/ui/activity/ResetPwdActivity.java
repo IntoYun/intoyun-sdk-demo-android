@@ -121,6 +121,7 @@ public class ResetPwdActivity extends BaseActivity {
 			}
 		});
 	}
+
 	/**
 	 * 获取验证码
 	 */

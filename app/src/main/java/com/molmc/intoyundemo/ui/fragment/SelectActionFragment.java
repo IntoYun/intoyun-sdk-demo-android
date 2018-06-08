@@ -153,7 +153,7 @@ public class SelectActionFragment extends BaseFragment implements ClickGridItemL
             actionVal.setTo(to);
         } else {
             String topicMode = "device";
-            if (IntoYunSdk.isLoRaNode(selectDevice.getBoard())){
+            if (IntoYunSdk.isLoRaNode(selectDevice.getType())){
                 topicMode = "lora";
             }
             String to = "v2/" + topicMode + '/' + deviceId + "/tx";
@@ -188,7 +188,7 @@ public class SelectActionFragment extends BaseFragment implements ClickGridItemL
         List<DeviceBean> devices = DeviceDataBase.getInstance(getActivity()).getDevices();
         List<DeviceBean> deviceFilters = new ArrayList<>();
         for (DeviceBean device : devices) {
-            if (!IntoYunSdk.isGateway(device.getBoard()) && filterDataPoint(device.getPidImp()).size() > 0) {
+            if (!IntoYunSdk.isGateway(device.getType()) && filterDataPoint(device.getPidImp()).size() > 0) {
                 deviceFilters.add(device);
             }
         }

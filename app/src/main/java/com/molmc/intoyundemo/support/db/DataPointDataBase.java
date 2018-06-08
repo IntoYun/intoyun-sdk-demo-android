@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.molmc.intoyundemo.support.db.DBOpenHelper.DB_VERSION;
+
 /**
  * Created by hehui on 17/3/27.
  */
 
 public class DataPointDataBase {
-
     private static final String DB_NAME = "intoyun_sdk_demo";
-    private static final int DB_VERSION = 1;
     private static final String TABLE_NAME = "datapoint";
     private static DBOpenHelper dbOpenHelper;
 

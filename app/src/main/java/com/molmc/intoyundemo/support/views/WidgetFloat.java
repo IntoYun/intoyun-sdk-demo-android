@@ -22,6 +22,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Map;
 
+import static com.molmc.intoyundemo.utils.Constant.DF_TLV;
 import static com.molmc.intoyundemo.utils.Constant.EVENT_SCROLL;
 
 /**
@@ -127,7 +128,7 @@ public class WidgetFloat extends LinearLayout implements BubbleSeekBar.OnProgres
         String sendData = Utils.toDecimal(progressFloat, dataPoint);
         tvValue.setText(sendData + unit);
         if (dataPoint.getDirection() != Constant.TRANSFROM_DATA) {
-            this.mListener.onChanged(Float.valueOf(sendData), dataPoint);
+            this.mListener.onChanged(Float.valueOf(sendData), dataPoint, DF_TLV);
         }
     }
 

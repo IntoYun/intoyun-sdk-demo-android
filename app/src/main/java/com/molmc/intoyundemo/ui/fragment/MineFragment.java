@@ -14,10 +14,16 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
-import com.luck.picture.lib.model.FunctionConfig;
-import com.luck.picture.lib.model.LocalMediaLoader;
-import com.luck.picture.lib.model.PictureConfig;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.molmc.intoyundemo.R;
+import com.molmc.intoyundemo.ui.activity.LoginActivity;
+import com.molmc.intoyundemo.utils.DialogUtil;
+import com.molmc.intoyundemo.utils.Utils;
 import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
 import com.molmc.intoyunsdk.network.model.response.UserResult;
@@ -25,19 +31,18 @@ import com.molmc.intoyunsdk.openapi.Constant;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyunsdk.utils.IntoUtil;
 import com.molmc.intoyunsdk.utils.IntoYunSharedPrefs;
-import com.molmc.intoyundemo.R;
-import com.molmc.intoyundemo.ui.activity.LoginActivity;
-import com.molmc.intoyundemo.utils.DialogUtil;
-import com.molmc.intoyundemo.utils.Utils;
 import com.orhanobut.logger.Logger;
-import com.yalantis.ucrop.entity.LocalMedia;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+import static android.app.Activity.RESULT_OK;
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 /**
  * Created by hehui on 17/3/21.
@@ -54,6 +59,9 @@ public class MineFragment extends BaseFragment {
     RelativeLayout layChangePassword;
     @Bind(R.id.lay_logout)
     RelativeLayout layLogout;
+
+
+    private List<LocalMedia> selectList = new ArrayList<>();
 
     public static MineFragment newInstance() {
         MineFragment fragment = new MineFragment();
@@ -73,11 +81,8 @@ public class MineFragment extends BaseFragment {
         setHasOptionsMenu(false);
         UserResult userInfo = IntoYunSharedPrefs.getUserInfo(getActivity());
         userName.setText(userInfo.getNickname());
+        showUserImage(userInfo.getImgSrc());
         getUserInfo();
-//        UserResult userInfo = IntoYunSharedPrefs.getUserInfo(getActivity());
-//        userName.setText(userInfo.getUsername());
-//        Glide.with(this).load(Constant.INTOYUN_HTTP_HOST + userInfo.getImgSrc()).fitCenter()
-//                .bitmapTransform(new RoundedCornersTransformation(getActivity(), Utils.dip2px(40), 0)).into(userHead);
     }
 
     @Override
@@ -105,75 +110,83 @@ public class MineFragment extends BaseFragment {
     }
 
     private void changeUserHeader() {
-        FunctionConfig config = new FunctionConfig();
-        config.setType(LocalMediaLoader.TYPE_IMAGE);
-        config.setCopyMode(FunctionConfig.CROP_MODEL_1_1);
-        config.setCompress(true);
-        config.setEnableCrop(true); //是否裁剪
-        config.setShowCamera(true); //是否显示相机
-        config.setCropW(120); //裁剪宽
-        config.setCropH(120); //裁剪高
-        config.setMaxSelectNum(1);
-
-        // 先初始化参数配置，在启动相册
-        PictureConfig.init(config);
-        PictureConfig.getPictureConfig().openPhoto(getActivity(), resultCallback);
+        PictureSelector.create(getActivity())
+                .openGallery(PictureMimeType.ofImage())
+                .maxSelectNum(1)
+                .minSelectNum(1)
+                .imageSpanCount(4)
+                .enableCrop(true)
+                .withAspectRatio(1, 1)
+                .selectionMode(PictureConfig.SINGLE)
+                .cropWH(300, 300)
+                .compress(true)
+                .previewImage(true)
+                .isZoomAnim(true)
+                .forResult(PictureConfig.CHOOSE_REQUEST);
     }
 
-    ;
 
-    /**
-     * 图片回调方法
-     */
 
-    private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    // 图片选择结果回调
+                    selectList = PictureSelector.obtainMultipleResult(data);
+                    Logger.i(new Gson().toJson(selectList));
+                    // 例如 LocalMedia 里面返回三种path
+                    // 1.media.getPath(); 为原图path
+                    // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
+                    // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
+                    // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
+                    LocalMedia media = selectList.get(0);
+                    if (media.isCut()) {
+                        // 注意：如果压缩过，在上传的时候，取 media.getCompressPath();
+                        // 压缩图compressPath
+                        final UserResult userInfoBean = IntoYunSharedPrefs.getUserInfo(getActivity());
+                        if (TextUtils.isEmpty(userInfoBean.getImgSrc())) {
+                            IntoYunSdk.uploadAvatar(media.getCompressPath(), media.getPictureType(), "user", IntoYunSharedPrefs.getUserInfo(getActivity()).getUid(), new IntoYunListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    String image = "v1/avatar/" + result + "?t=" + IntoUtil.getCurrentTimeMillis();
+                                    userInfoBean.setImgSrc(image);
+                                    IntoYunSharedPrefs.saveUserInfo(getActivity(), userInfoBean);
 
-        @Override
-        public void onSelectSuccess(List<LocalMedia> resultList) {
-            Logger.i(new Gson().toJson(resultList));
-            LocalMedia media = resultList.get(0);
-            final UserResult userInfoBean = IntoYunSharedPrefs.getUserInfo(getActivity());
-            if (media.isCompressed()) {
-                // 注意：如果压缩过，在上传的时候，取 media.getCompressPath();
-                // 压缩图compressPath
-                if (TextUtils.isEmpty(userInfoBean.getImgSrc())) {
-                    IntoYunSdk.uploadAvatar(media.getCompressPath(), "user", IntoYunSharedPrefs.getUserInfo(getActivity()).getUid(), new IntoYunListener<String>() {
-                        @Override
-                        public void onSuccess(String result) {
-                            String image = "v1/avatar/" + result + "?t=" + IntoUtil.getCurrentTimeMillis();
-                            userInfoBean.setImgSrc(image);
-                            IntoYunSharedPrefs.saveUserInfo(getActivity(), userInfoBean);
-                            Glide.with(getActivity()).load(Constant.INTOYUN_HTTP_HOST + image).placeholder(R.mipmap.ic_default_1).fitCenter().bitmapTransform(new RoundedCornersTransformation(getActivity(), Utils.dip2px(40), 0)).into(userHead);
-                            ;
+                                    showUserImage(image);
+                                }
+
+                                @Override
+                                public void onFail(NetError error) {
+                                    showToast(error.getMessage());
+                                }
+                            });
+                        } else {
+                            String avatarId = Utils.getAvatarId(userInfoBean.getImgSrc());
+                            IntoYunSdk.updateAvatar(media.getCompressPath(), media.getPictureType(), avatarId, "user", new IntoYunListener() {
+                                @Override
+                                public void onSuccess(Object result) {
+                                    getUserInfo();
+                                }
+
+                                @Override
+                                public void onFail(NetError error) {
+                                    showToast(error.getMessage());
+                                }
+                            });
                         }
 
-                        @Override
-                        public void onFail(NetError error) {
-                            showToast(error.getMessage());
-                        }
-                    });
-                } else {
-                    String avatarId = Utils.getAvatarId(userInfoBean.getImgSrc());
-                    IntoYunSdk.updateAvatar(media.getCompressPath(), avatarId, "user", new IntoYunListener() {
-                        @Override
-                        public void onSuccess(Object result) {
-                            getUserInfo();
-                        }
-
-                        @Override
-                        public void onFail(NetError error) {
-                            showToast(error.getMessage());
-                        }
-                    });
-                }
-
-            } else {
-                // 注意：没有压缩过，在上传的时候，取 media.getPath();
-                // 原图path
-                // 注意：如果media.getCatPath();不为空的话 就代表裁剪的图片，上传时可取，但是如果又压缩过，则取最终压缩过的compressPath
+                    } else {
+                        // 注意：没有压缩过，在上传的时候，取 media.getPath();
+                        // 原图path
+                        // 注意：如果media.getCatPath();不为空的话 就代表裁剪的图片，上传时可取，但是如果又压缩过，则取最终压缩过的compressPath
+                    }
+                    break;
             }
         }
-    };
+    }
+
 
     /**
      * 获取用户信息
@@ -184,8 +197,8 @@ public class MineFragment extends BaseFragment {
             public void onSuccess(UserResult result) {
                 Logger.i(new Gson().toJson(result));
                 userName.setText(TextUtils.isEmpty(result.getNickname())? result.getUsername() : result.getNickname());
-                Glide.with(MineFragment.this).load(Constant.INTOYUN_HTTP_HOST + result.getImgSrc()).placeholder(R.mipmap.ic_default_1).fitCenter().bitmapTransform(new RoundedCornersTransformation(getActivity(), Utils.dip2px(40), 0)).into(userHead);
 
+                showUserImage(result.getImgSrc());
             }
 
             @Override
@@ -202,6 +215,19 @@ public class MineFragment extends BaseFragment {
                 changeUserInfo(input.toString());
             }
         });
+    }
+
+
+    private void showUserImage(String imgSrc){
+        RequestOptions opts = new RequestOptions();
+        opts.placeholder(R.mipmap.ic_default_1);
+        opts.fitCenter();
+
+        Glide.with(MineFragment.this)
+                .load(Constant.getHttpHost() + imgSrc)
+                .apply(opts)
+                .apply(bitmapTransform(new RoundedCornersTransformation(Utils.dip2px(40), 0)))
+                .into(userHead);
     }
 
     /**

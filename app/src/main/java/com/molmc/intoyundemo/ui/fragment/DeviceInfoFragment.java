@@ -1,9 +1,11 @@
 package com.molmc.intoyundemo.ui.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,10 +16,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
-import com.luck.picture.lib.model.FunctionConfig;
-import com.luck.picture.lib.model.LocalMediaLoader;
-import com.luck.picture.lib.model.PictureConfig;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.molmc.intoyundemo.R;
+import com.molmc.intoyundemo.bean.FragmentArgs;
+import com.molmc.intoyundemo.support.eventbus.UpdateDevice;
+import com.molmc.intoyundemo.ui.activity.BaseActivity;
+import com.molmc.intoyundemo.ui.activity.FragmentCommonActivity;
+import com.molmc.intoyundemo.utils.Utils;
 import com.molmc.intoyunsdk.bean.DeviceBean;
 import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
@@ -25,22 +35,20 @@ import com.molmc.intoyunsdk.network.model.request.DeviceReq;
 import com.molmc.intoyunsdk.openapi.Constant;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyunsdk.utils.IntoUtil;
-import com.molmc.intoyundemo.R;
-import com.molmc.intoyundemo.bean.FragmentArgs;
-import com.molmc.intoyundemo.support.eventbus.UpdateDevice;
-import com.molmc.intoyundemo.ui.activity.BaseActivity;
-import com.molmc.intoyundemo.ui.activity.FragmentCommonActivity;
-import com.molmc.intoyundemo.utils.Utils;
+import com.molmc.intoyunsdk.utils.IntoYunSharedPrefs;
 import com.orhanobut.logger.Logger;
-import com.yalantis.ucrop.entity.LocalMedia;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+import static android.app.Activity.RESULT_OK;
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 /**
  * features: 设备信息
@@ -66,6 +74,8 @@ public class DeviceInfoFragment extends BaseFragment implements View.OnClickList
 
     private DeviceBean mDevice;
 
+    private List<LocalMedia> selectList = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -84,8 +94,7 @@ public class DeviceInfoFragment extends BaseFragment implements View.OnClickList
         if (mDevice != null) {
             deviceName.setText(mDevice.getName());
             deviceDesc.setText(mDevice.getDescription());
-            Glide.with(this).load(com.molmc.intoyunsdk.openapi.Constant.INTOYUN_HTTP_HOST + mDevice.getImgSrc()).placeholder(R.mipmap.ic_default_1)
-                    .bitmapTransform(new RoundedCornersTransformation(getActivity(), Utils.dip2px(40), 0)).into(deviceHead);
+            showDevImage(mDevice.getImgSrc());
         }
         deviceHead.setOnClickListener(this);
         BaseActivity baseActivity = (BaseActivity) getActivity();
@@ -177,77 +186,88 @@ public class DeviceInfoFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v == deviceHead) {
-            FunctionConfig config = new FunctionConfig();
-            config.setType(LocalMediaLoader.TYPE_IMAGE);
-            config.setCopyMode(FunctionConfig.CROP_MODEL_1_1);
-            config.setCompress(true);
-            config.setEnableCrop(true); //是否裁剪
-            config.setShowCamera(true); //是否显示相机
-            config.setCropW(120); //裁剪宽
-            config.setCropH(120); //裁剪高
-            config.setMaxSelectNum(1);
-
-            // 先初始化参数配置，在启动相册
-            PictureConfig.init(config);
-            PictureConfig.getPictureConfig().openPhoto(getActivity(), resultCallback);
+            PictureSelector.create(getActivity())
+                    .openGallery(PictureMimeType.ofImage())
+                    .maxSelectNum(1)
+                    .minSelectNum(1)
+                    .imageSpanCount(4)
+                    .enableCrop(true)
+                    .withAspectRatio(1, 1)
+                    .selectionMode(PictureConfig.SINGLE)
+                    .cropWH(300, 300)
+                    .compress(true)
+                    .previewImage(true)
+                    .isZoomAnim(true)
+                    .forResult(PictureConfig.CHOOSE_REQUEST);
         }
     }
 
 
-    /**
-     * 图片回调方法
-     */
+    private void showDevImage(String imgSrc){
+        RequestOptions opts = new RequestOptions();
+        opts.placeholder(R.mipmap.ic_default_1);
+        opts.fitCenter();
 
-    private PictureConfig.OnSelectResultCallback resultCallback = new PictureConfig.OnSelectResultCallback() {
+        Glide.with(DeviceInfoFragment.this)
+                .load(Constant.getHttpHost() + imgSrc)
+                .apply(opts)
+                .apply(bitmapTransform(new RoundedCornersTransformation(Utils.dip2px(40), 0)))
+                .into(deviceHead);
+    }
 
-        @Override
-        public void onSelectSuccess(List<LocalMedia> resultList) {
-            Logger.i(new Gson().toJson(resultList));
-            LocalMedia media = resultList.get(0);
-            if (media.isCompressed()) {
-                // 注意：如果压缩过，在上传的时候，取 media.getCompressPath();
-                // 压缩图compressPath
-//				if (TextUtils.isEmpty(mDevice.getImgSrc())) {
-                IntoYunSdk.uploadAvatar(media.getCompressPath(), "device", mDevice.getDeviceId(), new IntoYunListener<String>() {
-                    @Override
-                    public void onSuccess(String result) {
-                        String image = "v1/avatar/" + result + "?t=" + IntoUtil.getCurrentTimeMillis();
-                        mDevice.setImgSrc(image);
-                        UpdateDevice updateDevice = new UpdateDevice(mDevice);
-                        EventBus.getDefault().post(updateDevice);
-                        Glide.with(DeviceInfoFragment.this).load(Constant.INTOYUN_HTTP_HOST + image).placeholder(R.mipmap.ic_default_1)
-                                .bitmapTransform(new RoundedCornersTransformation(getActivity(), Utils.dip2px(40), 0)).fitCenter().bitmapTransform(new RoundedCornersTransformation(getActivity(), Utils.dip2px(40), 0)).into(deviceHead);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    // 图片选择结果回调
+                    selectList = PictureSelector.obtainMultipleResult(data);
+                    // 例如 LocalMedia 里面返回三种path
+                    // 1.media.getPath(); 为原图path
+                    // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
+                    // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
+                    // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
+                    LocalMedia media = selectList.get(0);
+
+                    if (TextUtils.isEmpty(mDevice.getImgSrc())) {
+                        IntoYunSdk.uploadAvatar(media.getCompressPath(), media.getPictureType(), "device", mDevice.getDeviceId(), new IntoYunListener<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                String image = "v1/avatar/" + result + "?t=" + IntoUtil.getCurrentTimeMillis();
+                                mDevice.setImgSrc(image);
+                                UpdateDevice updateDevice = new UpdateDevice(mDevice);
+                                EventBus.getDefault().post(updateDevice);
+                                showDevImage(image);
+                            }
+
+                            @Override
+                            public void onFail(NetError error) {
+                                showToast(error.getMessage());
+                            }
+                        });
+
+                    } else {
+                        String avatarId = Utils.getAvatarId(mDevice.getImgSrc());
+                        IntoYunSdk.updateAvatar(media.getCompressPath(), media.getPictureType(), avatarId, "device", new IntoYunListener() {
+                            @Override
+                            public void onSuccess(Object result) {
+                                String image = "v1/avatar/" + avatarId + "?t=" + IntoUtil.getCurrentTimeMillis();
+                                mDevice.setImgSrc(image);
+                                UpdateDevice updateDevice = new UpdateDevice(mDevice);
+                                EventBus.getDefault().post(updateDevice);
+                                showDevImage(image);
+                            }
+
+                            @Override
+                            public void onFail(NetError error) {
+                                showToast(error.getMessage());
+                            }
+                        });
                     }
-
-                    @Override
-                    public void onFail(NetError error) {
-                        showToast(error.getMessage());
-                    }
-                });
-//				} else {
-//					final String avatarId = Utils.getAvatarId(mDevice.getImgSrc());
-//					IntoYunSdk.updateAvatar(media.getCompressPath(), avatarId, "device", new IntoYunListener() {
-//						@Override
-//						public void onSuccess(Object result) {
-//							String image = "v1/avatar/" + avatarId + "?t=" + IntoUtil.getCurrentTimeMillis();
-//							mDevice.setImgSrc(image);
-//							UpdateDevice updateDevice = new UpdateDevice(mDevice);
-//							EventBus.getDefault().post(updateDevice);
-//						}
-//
-//						@Override
-//						public void onFail(NetError error) {
-//							showToast(error.getMessage());
-//						}
-//					});
-//				}
-
-            } else {
-                // 注意：没有压缩过，在上传的时候，取 media.getPath();
-                // 原图path
-                // 注意：如果media.getCatPath();不为空的话 就代表裁剪的图片，上传时可取，但是如果又压缩过，则取最终压缩过的compressPath
+                    break;
             }
         }
-    };
+    }
 
 }

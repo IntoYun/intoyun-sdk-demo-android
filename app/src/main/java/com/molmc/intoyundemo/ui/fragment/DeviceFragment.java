@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.google.gson.Gson;
@@ -24,6 +25,7 @@ import com.molmc.intoyundemo.support.db.DataPointDataBase;
 import com.molmc.intoyundemo.support.eventbus.DataPointEvent;
 import com.molmc.intoyundemo.support.views.OnChangeListener;
 import com.molmc.intoyundemo.support.views.WidgetBool;
+import com.molmc.intoyundemo.support.views.WidgetCustom;
 import com.molmc.intoyundemo.support.views.WidgetEnum;
 import com.molmc.intoyundemo.support.views.WidgetExtra;
 import com.molmc.intoyundemo.support.views.WidgetFloat;
@@ -33,8 +35,10 @@ import com.molmc.intoyundemo.ui.activity.FragmentCommonActivity;
 import com.molmc.intoyundemo.utils.Constant;
 import com.molmc.intoyunsdk.bean.DataPointBean;
 import com.molmc.intoyunsdk.bean.DeviceBean;
+import com.molmc.intoyunsdk.bean.ProductBean;
 import com.molmc.intoyunsdk.mqtt.PublishListener;
 import com.molmc.intoyunsdk.mqtt.ReceiveListener;
+import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
 import com.molmc.intoyunsdk.openapi.DataProtocol;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
@@ -49,6 +53,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 import static com.molmc.intoyundemo.utils.Constant.BOOL_DT;
+import static com.molmc.intoyundemo.utils.Constant.DF_CUSTOM;
+import static com.molmc.intoyundemo.utils.Constant.DF_TLV;
 import static com.molmc.intoyundemo.utils.Constant.ENUM_DT;
 import static com.molmc.intoyundemo.utils.Constant.EXTRA_DT;
 import static com.molmc.intoyundemo.utils.Constant.NUMBER_DT;
@@ -64,7 +70,8 @@ import static com.molmc.intoyunsdk.tcpws.TcpwsProtocol.SEND_SMS;
  * Email：   hhe@molmc.com
  */
 
-public class DeviceFragment extends BaseFragment implements OnChangeListener, ReceiveListener, ViewTreeObserver.OnGlobalLayoutListener {
+public class DeviceFragment extends BaseFragment implements OnChangeListener,
+                                    ReceiveListener, ViewTreeObserver.OnGlobalLayoutListener {
 
     public static void launch(Activity from, DeviceBean deviceBean) {
         FragmentArgs args = new FragmentArgs();
@@ -76,10 +83,13 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
     LinearLayout dataContainer;
     @Bind(R.id.scrollView)
     ScrollView mScrollView;
+    @Bind(R.id.layoutEmpty)
+    RelativeLayout layEmpty;
 
     private DeviceBean deviceBean;
     private List<DataPointBean> dataPoints;
     private LocalBroadcastReceiver mLocalBroadcastReceiver;
+    private ProductBean product;
 
     @Nullable
     @Override
@@ -96,10 +106,23 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
             dataPoints = DataPointDataBase.getInstance(getActivity()).getDataPoints(deviceBean.getPidImp());
         }
         deviceBean.setAccessMode(IntoYunSdk.boardToName(deviceBean.getBoard()));
+        IntoYunSdk.getProductById(deviceBean.getPidImp(), new IntoYunListener<ProductBean>() {
+            @Override
+            public void onSuccess(ProductBean result) {
+                product = result;
+                dataPoints = result.getDatapoints();
+                setDeviceWidget();
+            }
+
+            @Override
+            public void onFail(NetError error) {
+                showToast(R.string.err_data_point_not_found);
+                layEmpty.setVisibility(View.VISIBLE);
+            }
+        });
         BaseActivity baseActivity = (BaseActivity) getActivity();
         baseActivity.getSupportActionBar().setTitle(deviceBean.getName());
         setHasOptionsMenu(false);
-        setDeviceWidget();
         IntoYunSdk.subscribeDataFromDevice(deviceBean, dataPoints, this);
         mScrollView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         //实例化广播接收机
@@ -112,38 +135,50 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
     }
 
     private void setDeviceWidget() {
-        for (DataPointBean dataPoint : dataPoints) {
-            switch (dataPoint.getType()) {
-                case NUMBER_DT: {
-                    WidgetFloat view = new WidgetFloat(getContext());
-                    view.initData(dataPoint, this);
-                    dataContainer.addView(view);
-                    break;
+        if (DF_CUSTOM.equals(product.getDataformat())){
+            layEmpty.setVisibility(View.GONE);
+            WidgetCustom view = new WidgetCustom(getContext());
+            view.initData(this);
+            dataContainer.addView(view);
+        } else if (DF_TLV.equals(product.getDataformat())) {
+            if (dataPoints != null && dataPoints.size() > 0) {
+                layEmpty.setVisibility(View.GONE);
+                for (DataPointBean dataPoint : dataPoints) {
+                    switch (dataPoint.getType()) {
+                        case NUMBER_DT: {
+                            WidgetFloat view = new WidgetFloat(getContext());
+                            view.initData(dataPoint, this);
+                            dataContainer.addView(view);
+                            break;
+                        }
+                        case BOOL_DT: {
+                            WidgetBool view = new WidgetBool(getContext());
+                            view.initData(dataPoint, this);
+                            dataContainer.addView(view);
+                            break;
+                        }
+                        case STRING_DT: {
+                            WidgetString view = new WidgetString(getContext());
+                            view.initData(dataPoint, this);
+                            dataContainer.addView(view);
+                            break;
+                        }
+                        case EXTRA_DT: {
+                            WidgetExtra view = new WidgetExtra(getContext());
+                            view.initData(dataPoint, this);
+                            dataContainer.addView(view);
+                            break;
+                        }
+                        case ENUM_DT: {
+                            WidgetEnum view = new WidgetEnum(getActivity());
+                            view.initData(dataPoint, this);
+                            dataContainer.addView(view);
+                            break;
+                        }
+                    }
                 }
-                case BOOL_DT: {
-                    WidgetBool view = new WidgetBool(getContext());
-                    view.initData(dataPoint, this);
-                    dataContainer.addView(view);
-                    break;
-                }
-                case STRING_DT: {
-                    WidgetString view = new WidgetString(getContext());
-                    view.initData(dataPoint, this);
-                    dataContainer.addView(view);
-                    break;
-                }
-                case EXTRA_DT: {
-                    WidgetExtra view = new WidgetExtra(getContext());
-                    view.initData(dataPoint, this);
-                    dataContainer.addView(view);
-                    break;
-                }
-                case ENUM_DT: {
-                    WidgetEnum view = new WidgetEnum(getActivity());
-                    view.initData(dataPoint, this);
-                    dataContainer.addView(view);
-                    break;
-                }
+            } else {
+                layEmpty.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -164,28 +199,47 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
     }
 
     @Override
-    public void onChanged(Object payload, DataPointBean dataPoint) {
-        Logger.i(String.valueOf(payload));IntoYunSdk.sendDataToDevice(deviceBean, payload, dataPoint, new PublishListener() {
-            @Override
-            public void onSuccess(String topic) {
+    public void onChanged(Object payload, DataPointBean dataPoint, String dataFormat) {
+        Logger.i(String.valueOf(payload));
+        if (DF_CUSTOM.equals(product.getDataformat())){
+            IntoYunSdk.sendDataToCustomDevice(deviceBean, ((String) payload).getBytes(), new PublishListener() {
+                @Override
+                public void onSuccess(String topic) {
 
-            }
+                }
 
-            @Override
-            public void onFailed(String topic, String errMsg) {
-                showToast(errMsg);
-            }
-        });
+                @Override
+                public void onFailed(String topic, String errMsg) {
+
+                }
+            });
+        } else if (DF_TLV.equals(product.getDataformat())) {
+            IntoYunSdk.sendDataToDevice(deviceBean, payload, dataPoint, new PublishListener() {
+                @Override
+                public void onSuccess(String topic) {
+
+                }
+
+                @Override
+                public void onFailed(String topic, String errMsg) {
+                    showToast(errMsg);
+                }
+            });
+        }
     }
 
     @Override
     public void onReceive(String topic, byte[] message) {
         String result = new String(message);
         Logger.i(result);
-        Map<Integer, Object> map = new Gson().fromJson(result, new TypeToken<Map<Integer, Object>>() {
-        }.getType());
         DataPointEvent dataPointEvent = new DataPointEvent();
-        dataPointEvent.setPayload(map);
+        if (DF_CUSTOM.equals(product.getDataformat())){ //自定义数据格式
+            dataPointEvent.setResult(result);
+        } else if (DF_TLV.equals(product.getDataformat())){ //tlv数据点格式
+            Map<Integer, Object> map = new Gson().fromJson(result, new TypeToken<Map<Integer, Object>>() {
+            }.getType());
+            dataPointEvent.setPayload(map);
+        }
         EventBus.getDefault().post(dataPointEvent);
     }
 
@@ -219,7 +273,6 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
         }
     }
 
-
     class LocalBroadcastReceiver extends BroadcastReceiver {
 
         @Override
@@ -234,22 +287,22 @@ public class DeviceFragment extends BaseFragment implements OnChangeListener, Re
                 String result = new String(DataProtocol.decode(msg, dataPoints));
 
                 Logger.i(result);
-                //json数据转object
-                Map<Integer, Object> map = new Gson().fromJson(result, new TypeToken<Map<Integer, Object>>() {
-                }.getType());
+
                 DataPointEvent dataPointEvent = new DataPointEvent();
-                dataPointEvent.setPayload(map);
+                if (DF_CUSTOM.equals(product.getDataformat())){//自定义数据格式
+                    dataPointEvent.setResult(result);
+                } else if (DF_TLV.equals(product.getDataformat())){ //tlv数据点格式
+                    Map<Integer, Object> map = new Gson().fromJson(result, new TypeToken<Map<Integer, Object>>() {
+                    }.getType());
+                    dataPointEvent.setPayload(map);
+                }
                 //更新界面数据
                 EventBus.getDefault().post(dataPointEvent);
-
-
             } else if (type == SEND_META) {
                 String msg = intent.getStringExtra("msg");
                 Logger.i("type: " + type + "\ndeviceId: " + deviceId + "\nmsg: " + msg);
             }
         }
     }
-
-
 
 }

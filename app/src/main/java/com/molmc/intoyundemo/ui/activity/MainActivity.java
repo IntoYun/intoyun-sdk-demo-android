@@ -11,9 +11,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.widget.FrameLayout;
 
-import com.ashokvarma.bottomnavigation.BadgeItem;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.ashokvarma.bottomnavigation.TextBadgeItem;
 import com.molmc.intoyundemo.R;
 import com.molmc.intoyundemo.support.db.DataPointDataBase;
 import com.molmc.intoyundemo.ui.fragment.BaseFragment;
@@ -68,12 +68,13 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     private int messageBadge = 0;
 
     private Map<String, BoardInfoBean> boardInfoMap;
-    private BadgeItem numberBadgeItem;
+    private TextBadgeItem numberBadgeItem;
     private UserResult userInfo;
 
     private BaseFragment[] fragments = {DeviceListFragment.newInstance(), MessageFragment.newInstance(), RecipeFragment.newInstance(), MineFragment.newInstance()};
     private String[] fragmentTags = {"DeviceListFragment", "MessageFragment", "RecipeFragment", "MineFragment"};
     private String[] titles;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,12 +94,13 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
         fragmentTransaction.add(R.id.frameContent, fragments[0], fragmentTags[0]).commit();
         getBoardInfo();
         registerReceiveMessage();
+
     }
 
     private void initBottomBar() {
         messageBadge = AppSharedPref.getInstance(this).getMessageBadge(userInfo.getUid());
         bottomNavigationBar.setTabSelectedListener(this);
-        numberBadgeItem = new BadgeItem()
+        numberBadgeItem = new TextBadgeItem()
                 .setBorderWidth(4)
                 .setText(String.valueOf(messageBadge))
                 .setBackgroundColorResource(R.color.color_red)
@@ -135,7 +137,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     }
 
 
-    private void getBoardInfo(){
+    private void getBoardInfo() {
         IntoYunSdk.getBoardInfo(new IntoYunListener<Map<String, BoardInfoBean>>() {
             @Override
             public void onSuccess(Map<String, BoardInfoBean> result) {
@@ -240,5 +242,14 @@ public class MainActivity extends BaseActivity implements BottomNavigationBar.On
     @Override
     public void onTabReselected(int position) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Fragment fragment = getCurrentFragment();
+        if (fragment != null) {
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

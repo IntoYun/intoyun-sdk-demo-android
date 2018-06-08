@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp"
+    android:background="@drawable/shape_data_point_background"
+    android:padding="@dimen/item_padding">
+
+    <RelativeLayout
+        android:id="@+id/layTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/cbRecv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/cb_receive"
+            android:textColor="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/btnClean"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/selector_corners_button"
+            android:text="@string/txt_clean"
+            android:textColor="@color/common_white" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/laySend"
+        android:layout_below="@+id/layTitle"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/input_round_background"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/layContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="40dp"
+            android:padding="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvRecv"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/laySend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp">
+
+        <RelativeLayout
+            android:id="@+id/laySendBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/cbSend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/cb_send"
+                android:textColor="@color/colorPrimary" />
+
+            <Button
+                android:id="@+id/btnSend"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/selector_corners_button"
+                android:text="@string/send"
+                android:textColor="@color/common_white" />
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/etContent"
+            style="@style/input_style"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_below="@id/laySendBar"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/input_round_background"
+            android:gravity="start"
+            android:hint="@string/input_hint"
+            android:padding="10dp" />
+
+    </RelativeLayout>
+</RelativeLayout>

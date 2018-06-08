@@ -21,6 +21,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Map;
 
+import static com.molmc.intoyundemo.utils.Constant.DF_TLV;
+
 /**
  * features: 开关控件
  * Author：  hhe on 16-8-6 11:03
@@ -99,7 +101,7 @@ public class WidgetBool extends LinearLayout implements CompoundButton.OnChecked
 
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		this.mListener.onChanged(isChecked, dataPoint);
+		this.mListener.onChanged(isChecked, dataPoint, DF_TLV);
 	}
 
 	@Override

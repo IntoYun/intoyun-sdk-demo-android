@@ -225,7 +225,6 @@ public class QRCaptureActivity extends BaseActivity implements Callback {
         Pattern pattern = Pattern.compile("^[A-Za-z0-9]{16,24}");
         if (pattern.matcher(resultText).matches()) {
             bindDevice(resultText, false);
-
         } else if (resultText.contains("virDeviceId") && resultText.contains("productId")) {
             try {
                 JSONObject jsonObject = new JSONObject(resultText);
@@ -277,6 +276,7 @@ public class QRCaptureActivity extends BaseActivity implements Callback {
             @Override
             public void onFail(NetError error) {
                 showToast(error.getMessage());
+                QRCaptureActivity.this.finish();
             }
         });
     }

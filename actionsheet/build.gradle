@@ -5,12 +5,11 @@ apply plugin: 'com.android.library'
 //version = "0.1.4"
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion rootProject.compileVersion
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 25
+        minSdkVersion rootProject.minVersion
+        targetSdkVersion rootProject.targetVersion
         versionCode 1
         versionName "1.0"
     }
@@ -23,11 +22,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 }
 //
 //def siteUrl = 'https://github.com/h124551753/AndroidActionSheet'    // project homepage
