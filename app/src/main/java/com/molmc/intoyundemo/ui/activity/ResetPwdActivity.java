@@ -73,13 +73,13 @@ public class ResetPwdActivity extends BaseActivity {
 				case 1: {
 					String str = String.format(getString(R.string.resend_sms_count), msg.arg1);
 					btnVldCode.setText(str);
-					btnVldCode.setTextColor(getResources().getColor(R.color.colorPrimary));
+					btnVldCode.setTextColor(getResources().getColor(R.color.white));
 					break;
 				}
 				case 2: {
 					btnVldCode.setEnabled(true);
 					btnVldCode.setText(R.string.resend_sms);
-					btnVldCode.setTextColor(getResources().getColor(R.color.colorPrimary));
+					btnVldCode.setTextColor(getResources().getColor(R.color.white));
 					if (mTimer!=null) {
 						mTimer.cancel();
 						mTimer = null;

@@ -65,8 +65,7 @@ public class RecipeTriggerTimer extends LinearLayout implements TimePickerDialog
 
         if (!IntoUtil.Empty.check(crontab)) {
             if ("*".equals(crontab.getDay_of_week())) {
-                tvRepeat.setText(list[getDayOfWeek()]);
-                this.crontab.setDay_of_week(String.valueOf(getDayOfWeek()));
+                tvRepeat.setText(list[list.length-1]);
             } else {
                 tvRepeat.setText(list[Integer.parseInt(crontab.getDay_of_week())]);
             }

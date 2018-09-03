@@ -12,12 +12,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.molmc.intoyundemo.utils.Utils;
 import com.molmc.intoyunsdk.network.IntoYunListener;
 import com.molmc.intoyunsdk.network.NetError;
 import com.molmc.intoyunsdk.network.model.BaseModel;
+import com.molmc.intoyunsdk.network.model.request.RegisterReq;
 import com.molmc.intoyunsdk.network.model.response.UserResult;
 import com.molmc.intoyunsdk.openapi.IntoYunSdk;
 import com.molmc.intoyundemo.R;
+import com.molmc.intoyunsdk.utils.IntoUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,6 +28,7 @@ import java.util.TimerTask;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.internal.Util;
 
 /**
  * features: 用户注册
@@ -74,13 +78,13 @@ public class RegisterActivity extends BaseActivity {
                 case 1: {
                     String str = String.format(getString(R.string.resend_sms_count), msg.arg1);
                     btnVldCode.setText(str);
-                    btnVldCode.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    btnVldCode.setTextColor(getResources().getColor(R.color.white));
                     break;
                 }
                 case 2: {
                     btnVldCode.setEnabled(true);
                     btnVldCode.setText(R.string.resend_sms);
-                    btnVldCode.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    btnVldCode.setTextColor(getResources().getColor(R.color.white));
                     if (mTimer != null) {
                         mTimer.cancel();
                         mTimer = null;
@@ -136,10 +140,12 @@ public class RegisterActivity extends BaseActivity {
     }
 
     /**
-     * 获取验证码
+     * 获取验证码,可以是手机帐号也可以时邮箱帐号，用户根据需求自行设计界面，本app已手机注册为例
+     * IntoYunSdk.AccountType.PHONE 为手机注册，获取手机验证码
+     * IntoYunSdk.AccountType.EMAIL 为邮箱注册，获取邮箱验证码
      */
     private void getVerifyCode() {
-        IntoYunSdk.getVerifyCode(account, new IntoYunListener() {
+        IntoYunSdk.getVerifyCode(account, IntoYunSdk.AccountType.PHONE, new IntoYunListener() {
 
             @Override
             public void onSuccess(Object result) {
@@ -162,6 +168,8 @@ public class RegisterActivity extends BaseActivity {
 
     /**
      * 注册
+     * 用户可以根据需求选择手机注册或邮箱注册，或者两种都兼容，开发者在此修改代码
+     *
      */
     private void register() {
         account = editAccount.getText().toString().trim();
@@ -184,7 +192,22 @@ public class RegisterActivity extends BaseActivity {
             showToast(R.string.err_password_length_error);
             return;
         }
-        IntoYunSdk.registerAccount(account, password, vldCode, new IntoYunListener<UserResult>() {
+
+        RegisterReq registerReq = new RegisterReq();
+        if (IntoUtil.isEmail(account)){
+            registerReq.setEmail(account);
+        } else if (IntoUtil.isPhone(account)){
+            registerReq.setPhone(account);
+        }else {
+            showToast(R.string.err_account_format);
+            return;
+        }
+        // 用户名默认和帐号相同，开发者可以修改成更符合自己需求的字符串
+        registerReq.setUsername(account);
+
+        registerReq.setPassword(password);
+        registerReq.setVldCode(vldCode);
+        IntoYunSdk.registerAccount(registerReq, new IntoYunListener<UserResult>() {
             @Override
             public void onSuccess(UserResult result) {
                 showToast(R.string.suc_register_account);
@@ -194,6 +217,7 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onFail(NetError exception) {
                 showToast(exception.getMessage());
+                mHandler.sendEmptyMessage(2);
                 if (mTimer != null) {
                     mTimer.cancel();
                 }

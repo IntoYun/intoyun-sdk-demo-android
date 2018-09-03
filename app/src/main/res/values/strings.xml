@@ -149,6 +149,7 @@
 	<string name="err_username_empty">用户名不能为空</string>
 	<string name="err_nickname_empty">昵称不能为空</string>
 	<string name="err_account_empty">帐号不能为空</string>
+	<string name="err_account_format">帐号格式不正确</string>
 	<string name="err_account_unregistered">帐号未注册</string>
 	<string name="err_password_empty">密码不能为空</string>
 	<string name="err_current_pwd_empty">当前密码不能为空</string>

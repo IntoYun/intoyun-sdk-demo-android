@@ -142,11 +142,11 @@ public class DeviceAdapter extends easyRegularAdapter<DeviceBean, DeviceAdapter.
 //                    DialogUtil.showToast(R.string.err_data_point_not_found);
 //                    return;
 //                }
-                if ("o8KOYgFBkowGnEd5".equals(device.getPidImp())) {
-                    SmartLightFragment.launch((Activity) mContext, device);
-                } else {
+//                if ("o8KOYgFBkowGnEd5".equals(device.getPidImp())) {
+//                    SmartLightFragment.launch((Activity) mContext, device);
+//                } else {
                     DeviceFragment.launch((Activity) mContext, device);
-                }
+//                }
             }
         };
     }

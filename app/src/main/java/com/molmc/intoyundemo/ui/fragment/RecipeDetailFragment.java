@@ -294,9 +294,9 @@ public class RecipeDetailFragment extends BaseFragment implements RecipeChangeLi
         RecipeBean.CrontabBean crontab = createRecipe.getCrontab();
         int hour = Integer.parseInt(crontab.getHour());
         if (initial) {
-            hour = hour - zone;
-        } else {
             hour = hour + zone;
+        } else {
+            hour = hour - zone;
         }
 
         if (hour > 23) {
@@ -320,6 +320,8 @@ public class RecipeDetailFragment extends BaseFragment implements RecipeChangeLi
                 crontab.setDay_of_week(String.valueOf(week));
             }
             hour = hour + 24;
+            crontab.setHour(String.valueOf(hour));
+        } else {
             crontab.setHour(String.valueOf(hour));
         }
         createRecipe.setCrontab(crontab);
